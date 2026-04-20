@@ -27,4 +27,7 @@ export const adminService = {
     return api.put(`/type_comptes/update/${id}`, data)
   },
   deleteTypeCompte(id: number) { return api.delete(`/type_comptes/delete/${id}`) },
+  getPromoCodes() { return api.get('/promo-codes') },
+  getPromoCodeHistory() { return api.get('/promo-codes/history') },
+  createPromoCode(data: { code: string; pointsValue?: number }) { return api.post('/promo-codes/create', data) },
 }

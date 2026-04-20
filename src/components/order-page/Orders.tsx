@@ -33,7 +33,7 @@ const OrderPage = () => {
                 <div className="gi-vendor-card-header">
                   <h5>Commandes en cours</h5>
                   <div className="gi-header-btn">
-                    <Link className="gi-btn-2" href="/shop-left-sidebar-col-3">
+                    <Link className="gi-btn-2" href="/boutique">
                       Boutique
                     </Link>
                   </div>

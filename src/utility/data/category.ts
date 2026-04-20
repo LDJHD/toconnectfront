@@ -11,7 +11,7 @@ const category: Category[] = [
   {
     persantine: "30%",
     icon: "fi fi-tr-peach",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Fruits",
     item: 320,
     num: 1,
@@ -19,7 +19,7 @@ const category: Category[] = [
   {
     persantine: "",
     icon: "fi fi-tr-bread",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Bakery",
     item: 65,
     num: 2,
@@ -27,7 +27,7 @@ const category: Category[] = [
   {
     persantine: "15%",
     icon: "fi fi-tr-corn",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Vegetables",
     item: 548,
     num: 3,
@@ -35,7 +35,7 @@ const category: Category[] = [
   {
     persantine: "10%",
     icon: "fi fi-tr-coffee-pot",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Dairy & Milk",
     item: 48,
     num: 4,
@@ -43,7 +43,7 @@ const category: Category[] = [
   {
     persantine: "",
     icon: "fi fi-tr-french-fries",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Snack & Spice",
     item: 59,
     num: 5,
@@ -51,7 +51,7 @@ const category: Category[] = [
   {
     persantine: "",
     icon: "fi fi-tr-hamburger-soda",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Juice & Drinks",
     item: 845,
     num: 6,
@@ -59,7 +59,7 @@ const category: Category[] = [
   {
     persantine: "",
     icon: "fi fi-tr-shrimp",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Seafood",
     item: 652,
     num: 1,
@@ -67,7 +67,7 @@ const category: Category[] = [
   {
     persantine: "20%",
     icon: "fi fi-tr-popcorn",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Fast Food",
     item: 320,
     num: 2,
@@ -75,7 +75,7 @@ const category: Category[] = [
   {
     persantine: "",
     icon: "fi fi-tr-egg",
-    image: process.env.NEXT_PUBLIC_URL + "/shop-left-sidebar-col-3.html",
+    image: process.env.NEXT_PUBLIC_URL + "/boutique.html",
     name: "Eggs",
     item: 154,
     num: 3,

@@ -157,7 +157,7 @@ function FeaturedProducts() {
 
         <div className="text-center" style={{ marginTop: "20px" }}>
           <Link
-            href="/shop-left-sidebar-col-3"
+            href="/boutique"
             style={{
               color: "#e50914",
               fontWeight: 600,

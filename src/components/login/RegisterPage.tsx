@@ -6,7 +6,7 @@ export const getRegistrationData = () => {
   return data ? JSON.parse(data) : null;
 };
 
-// Redirect register to login page (TO CONNECT TV uses email verification)
+// Redirect register to login page (TO CONNECT uses email verification)
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 

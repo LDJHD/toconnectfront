@@ -69,7 +69,7 @@ function ShopCategories() {
               <div key={cat.id || index} className="col-lg-3 col-md-4 col-sm-6 col-6 mb-4">
                 <Fade direction="up" triggerOnce duration={400} delay={index * 80}>
                   <Link
-                    href={`/shop-left-sidebar-col-3/?cat=${slugValue}`}
+                    href={`/boutique/?cat=${slugValue}`}
                     className="cat-card"
                     style={{ textDecoration: "none" }}
                   >

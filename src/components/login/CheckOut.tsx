@@ -7,6 +7,8 @@ import { Col, Row } from "react-bootstrap";
 import { clearCart } from "@/store/reducers/cartSlice";
 import { showErrorToast, showSuccessToast } from "../toast-popup/Toastify";
 import Link from "next/link";
+import { commandesService } from "@/lib/services/commandes";
+import { authService } from "@/lib/services/auth";
 
 const WA_NUMBER = "22967357728";
 
@@ -27,7 +29,7 @@ const buildWhatsAppMessage = (
   const adresse = [formData.adresse, formData.ville].filter(Boolean).join(", ");
 
   const msg =
-    `*COMMANDE TO CONNECT TV*\n\n` +
+    `*COMMANDE TO CONNECT*\n\n` +
     `*Nom :* ${formData.nom}\n` +
     `*Telephone :* ${formData.telephone}\n` +
     (adresse ? `*Adresse :* ${adresse}\n` : "") +
@@ -44,6 +46,7 @@ const CheckOut = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const sessionId = useSelector((state: RootState) => state.cart.sessionId);
   const [viewLink, setViewLink] = useState("");
+  const [loyalty, setLoyalty] = useState<any>(null);
 
   const subTotal = cartItems.reduce(
     (acc: number, item: any) => acc + Number(item.prix || item.newPrice || 0) * item.quantity,
@@ -52,6 +55,7 @@ const CheckOut = () => {
 
   const [formData, setFormData] = useState({
     nom: "",
+    email: "",
     telephone: "",
     adresse: "",
     ville: "Cotonou",
@@ -64,15 +68,43 @@ const CheckOut = () => {
     }
   }, [sessionId]);
 
+  useEffect(() => {
+    const initUser = async () => {
+      const raw = localStorage.getItem("login_user");
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      setFormData((prev) => ({
+        ...prev,
+        nom: parsed?.utilisateur?.nom || prev.nom,
+        email: parsed?.utilisateur?.email || prev.email,
+        telephone: parsed?.utilisateur?.telephone || prev.telephone,
+      }));
+      const utilisateurId = Number(parsed?.utilisateur?.id);
+      if (utilisateurId) {
+        try {
+          const res = await authService.getLoyaltySummary(utilisateurId);
+          setLoyalty(res.data || null);
+        } catch {
+          setLoyalty(null);
+        }
+      }
+    };
+    initUser();
+  }, []);
+
+  const reductionPourcentage = Number(loyalty?.canApplyReduction ? loyalty?.reductionPourcentage || 0 : 0);
+  const reductionMontant = reductionPourcentage > 0 ? (subTotal * reductionPourcentage) / 100 : 0;
+  const totalFinal = subTotal - reductionMontant;
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleWhatsApp = () => {
-    if (!formData.nom || !formData.telephone) {
-      showErrorToast("Veuillez renseigner votre nom et téléphone.");
+  const handleWhatsApp = async () => {
+    if (!formData.nom || !formData.telephone || !formData.email) {
+      showErrorToast("Veuillez renseigner votre nom, email et téléphone.");
       return;
     }
     if (cartItems.length === 0) {
@@ -80,15 +112,30 @@ const CheckOut = () => {
       return;
     }
 
-    const message = buildWhatsAppMessage(formData, cartItems, subTotal, viewLink);
-    const encoded = encodeURIComponent(message);
-    const url = `https://wa.me/${WA_NUMBER}?text=${encoded}`;
+    try {
+      const res = await commandesService.create({
+        sessionId,
+        utilisateurNom: formData.nom,
+        utilisateurEmail: formData.email,
+        utilisateurTelephone: formData.telephone,
+        adresseLivraison: [formData.adresse, formData.ville].filter(Boolean).join(", "),
+        notes: formData.notes || undefined,
+      });
+      const payload = res.data || {};
+      const url = payload.whatsappLinkClient || payload.whatsappLinkAdmin;
+      if (url) {
+        window.open(url, "_blank");
+      } else {
+        const message = buildWhatsAppMessage(formData, cartItems, totalFinal, viewLink);
+        const encoded = encodeURIComponent(message);
+        window.open(`https://wa.me/${WA_NUMBER}?text=${encoded}`, "_blank");
+      }
 
-    window.open(url, "_blank");
-
-    // Vider le panier et confirmer
-    dispatch(clearCart());
-    showSuccessToast("Redirection WhatsApp... Votre panier a été vidé.");
+      dispatch(clearCart());
+      showSuccessToast("Commande creee. Redirection WhatsApp...");
+    } catch (error: any) {
+      showErrorToast(error?.response?.data?.message || "Erreur lors de la creation de commande");
+    }
   };
 
   return (
@@ -97,7 +144,7 @@ const CheckOut = () => {
         {cartItems.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px" }}>
             <h4>Votre panier est vide</h4>
-            <Link href="/shop-left-sidebar-col-3/" style={{ color: "#e50914" }}>
+            <Link href="/boutique/" style={{ color: "#e50914" }}>
               Retour à la boutique
             </Link>
           </div>
@@ -131,6 +178,19 @@ const CheckOut = () => {
                       onChange={handleChange}
                       className="form-control"
                       placeholder="Votre nom"
+                    />
+                  </Col>
+                  <Col md={6} className="mb-3">
+                    <label style={{ fontWeight: 600, marginBottom: "5px", display: "block" }}>
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="exemple@email.com"
                     />
                   </Col>
                   <Col md={6} className="mb-3">
@@ -265,9 +325,25 @@ const CheckOut = () => {
                 >
                   <span>Total</span>
                   <span style={{ color: "#e50914" }}>
-                    {subTotal.toLocaleString("fr-FR")} F
+                    {totalFinal.toLocaleString("fr-FR")} F
                   </span>
                 </div>
+                {loyalty && (
+                  <div style={{ marginBottom: "14px", fontSize: "0.85rem", color: "#555" }}>
+                    <div>Points: <strong>{Number(loyalty.points || 0).toFixed(2)}</strong></div>
+                    {loyalty.statut === "vip" ? (
+                      <div style={{ color: "#e50914", fontWeight: 700 }}>Statut VIP (pas de calcul reduction)</div>
+                    ) : reductionPourcentage > 0 ? (
+                      <>
+                        <div>Reduction: <strong>{reductionPourcentage}%</strong></div>
+                        <div>Montant reduction: -{reductionMontant.toLocaleString("fr-FR")} F</div>
+                        <div>Usages restants: {Number(loyalty.remainingUses || 0)} / 5</div>
+                      </>
+                    ) : (
+                      <div>Aucune reduction (active a partir de 2%)</div>
+                    )}
+                  </div>
+                )}
 
                 {/* Lien apercu envoye dans le message WhatsApp uniquement */}
 

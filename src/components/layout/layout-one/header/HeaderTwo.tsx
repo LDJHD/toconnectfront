@@ -3,14 +3,18 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import SidebarCart from "../../../model/SidebarCart";
+import MobileManuSidebar from "../../../model/MobileManuSidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/store";
 import { logout, setUserData } from "@/store/reducers/registrationSlice";
 import { setSearchTerm } from "@/store/reducers/filterReducer";
+import { authService } from "@/lib/services/auth";
 
 function HeaderTwo({ cartItems, wishlistItems }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeMainMenu, setActiveMainMenu] = useState<string | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
   const isAuthenticated = useSelector(
@@ -18,25 +22,68 @@ function HeaderTwo({ cartItems, wishlistItems }) {
   );
   const { searchTerm } = useSelector((state: RootState) => state.filter);
   const [searchInput, setSearchInput] = useState(searchTerm || "");
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [codeValue, setCodeValue] = useState("");
+  const [userPoints, setUserPoints] = useState<number>(0);
+  const [submittingCode, setSubmittingCode] = useState(false);
 
   useEffect(() => {
     const userdata = localStorage.getItem("login_user") ?? "";
     const user = userdata !== "" ? JSON.parse(userdata) : null;
     dispatch(setUserData({ isAuthenticated: userdata !== "", user }));
+    const points = Number(user?.utilisateur?.points || 0);
+    setUserPoints(points);
   }, [dispatch]);
 
+  const handleRedeemCode = async () => {
+    const userdata = localStorage.getItem("login_user");
+    if (!userdata) return;
+    const parsed = JSON.parse(userdata);
+    const utilisateurId = Number(parsed?.utilisateur?.id);
+    if (!utilisateurId || !codeValue.trim()) return;
+
+    setSubmittingCode(true);
+    try {
+      const res = await authService.redeemPromoCode(codeValue.trim(), utilisateurId);
+      const payload = res.data || {};
+      const nextPoints = Number(payload.points || 0);
+      parsed.utilisateur = { ...(parsed.utilisateur || {}), points: nextPoints, statut: payload.statut || parsed.utilisateur?.statut };
+      localStorage.setItem("login_user", JSON.stringify(parsed));
+      setUserPoints(nextPoints);
+      setCodeValue("");
+      setShowCodeModal(false);
+      window.alert("Code applique avec succes");
+    } catch (error: any) {
+      window.alert(error?.response?.data?.message || "Code invalide ou deja utilise");
+    } finally {
+      setSubmittingCode(false);
+    }
+  };
+
   const handleSearch = (event: any) => {
-    setSearchInput(event.target.value);
+    const value = event.target.value;
+    setSearchInput(value);
+    dispatch(setSearchTerm(value.trim()));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(setSearchTerm(searchInput));
-    router.push("/shop-left-sidebar-col-3");
+    const term = searchInput.trim();
+    dispatch(setSearchTerm(term));
+    if (!term) {
+      router.push("/search");
+      return;
+    }
+    router.push(`/search?q=${encodeURIComponent(term)}`);
   };
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
+  const openMobileManu = () => setIsMobileMenuOpen(true);
+  const closeMobileManu = () => setIsMobileMenuOpen(false);
+  const toggleMainMenu = (menuKey: string) => {
+    setActiveMainMenu((prev) => (prev === menuKey ? null : menuKey));
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("login_user");
@@ -52,12 +99,35 @@ function HeaderTwo({ cartItems, wishlistItems }) {
           <div className="row">
             <div className="gi-flex">
               {/* Logo */}
-              <div className="align-self-center gi-header-logo">
+              <div className="align-self-center gi-header-logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <button
+                  onClick={openMobileManu}
+                  className="d-lg-none"
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #e5e7eb",
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "10px",
+                    fontSize: "1rem",
+                    cursor: "pointer",
+                    padding: "0",
+                    color: "#111827",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.06)"
+                  }}
+                  aria-label="Menu"
+                  title="Ouvrir le menu"
+                >
+                  <i className="fi-rr-menu-burger" style={{ fontWeight: 700 }}></i>
+                </button>
                 <div className="header-logo">
                   <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
                     <img
                       src={process.env.NEXT_PUBLIC_URL + "/assets/img/logo/logo.png"}
-                      alt="TO CONNECT TV"
+                      alt="TO CONNECT"
                       style={{ maxHeight: "45px" }}
                     />
                     {/* <span style={{ fontSize: "1.2rem", fontWeight: 700, color: "#e50914", lineHeight: 1.1 }}>
@@ -125,6 +195,16 @@ function HeaderTwo({ cartItems, wishlistItems }) {
                             </Link>
                           </li>
                           <li>
+                            <a className="dropdown-item" onClick={() => setShowCodeModal(true)} style={{ cursor: "pointer" }}>
+                              Saisir mon code
+                            </a>
+                          </li>
+                          <li>
+                            <span className="dropdown-item" style={{ color: "#e50914", fontWeight: 700 }}>
+                              Mes points: {userPoints.toFixed(2)}
+                            </span>
+                          </li>
+                          <li>
                             <a className="dropdown-item" onClick={handleLogout} style={{ cursor: "pointer" }}>
                               Deconnexion
                             </a>
@@ -143,7 +223,7 @@ function HeaderTwo({ cartItems, wishlistItems }) {
                             </Link>
                           </li>
                           <li>
-                            <Link className="dropdown-item" href="/shop-left-sidebar-col-3">
+                            <Link className="dropdown-item" href="/boutique">
                               Boutique
                             </Link>
                           </li>
@@ -193,7 +273,37 @@ function HeaderTwo({ cartItems, wishlistItems }) {
           </div>
         </div>
       </div>
+
       <SidebarCart isCartOpen={isCartOpen} closeCart={closeCart} />
+      <MobileManuSidebar
+        isMobileMenuOpen={isMobileMenuOpen}
+        closeMobileManu={closeMobileManu}
+        toggleMainMenu={toggleMainMenu}
+        activeMainMenu={activeMainMenu}
+      />
+
+      {showCodeModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div style={{ background: "#fff", width: "100%", maxWidth: "420px", borderRadius: "14px", padding: "22px" }}>
+            <h4 style={{ fontWeight: 700, marginBottom: "12px" }}>Saisir mon code</h4>
+            <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "12px" }}>
+              Points actuels: <strong>{userPoints.toFixed(2)}</strong>
+            </p>
+            <input
+              value={codeValue}
+              onChange={(e) => setCodeValue(e.target.value.toUpperCase())}
+              placeholder="Ex: TC-1234-ABCD"
+              style={{ width: "100%", border: "1px solid #ddd", borderRadius: "8px", padding: "10px 12px", marginBottom: "14px" }}
+            />
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+              <button onClick={() => setShowCodeModal(false)} style={{ border: "1px solid #ddd", background: "#fff", borderRadius: "8px", padding: "8px 12px" }}>Annuler</button>
+              <button onClick={handleRedeemCode} disabled={submittingCode} style={{ border: "none", background: "#e50914", color: "#fff", borderRadius: "8px", padding: "8px 12px", opacity: submittingCode ? 0.7 : 1 }}>
+                {submittingCode ? "Validation..." : "Valider"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

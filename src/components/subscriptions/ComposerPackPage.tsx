@@ -176,7 +176,7 @@ function ComposerPackPage() {
               ) : articles.length === 0 ? (
                 <div className="text-center" style={{ padding: "40px", color: "#999" }}>
                   <p>Aucun article disponible pour le moment.</p>
-                  <Link href="/shop-left-sidebar-col-3" style={{ color: "#e50914", fontWeight: 600 }}>
+                  <Link href="/boutique" style={{ color: "#e50914", fontWeight: 600 }}>
                     Voir la boutique
                   </Link>
                 </div>

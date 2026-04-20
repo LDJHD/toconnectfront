@@ -170,7 +170,7 @@ const ItemCard = ({ data }: any) => {
           >
             {categorie && (
               <Link
-                href={`/shop-left-sidebar-col-3/?cat=${(categorie || "")
+                href={`/boutique/?cat=${(categorie || "")
                   .normalize("NFD")
                   .replace(/[\u0300-\u036f]/g, "")
                   .toLowerCase()}`}

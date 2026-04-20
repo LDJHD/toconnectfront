@@ -55,7 +55,7 @@ const CartPreview = () => {
     return (
       <div style={{ textAlign: "center", padding: "60px 0" }}>
         <h4>Lien invalide ou expiré</h4>
-        <Link href="/shop-left-sidebar-col-3/" style={{ color: "#e50914" }}>
+        <Link href="/boutique/" style={{ color: "#e50914" }}>
           Retour à la boutique
         </Link>
       </div>
@@ -129,7 +129,7 @@ const CartPreview = () => {
 
               <div style={{ marginTop: "25px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
                 <Link
-                  href="/shop-left-sidebar-col-3/"
+                  href="/boutique/"
                   style={{
                     padding: "12px 24px",
                     border: "2px solid #e50914",

@@ -43,7 +43,7 @@ function HeaderOne({ cartItems, wishlistItems }) {
             </div>
             <div className="col text-center header-top-center">
               <div className="header-top-message" style={{ color: "#fff", fontWeight: 600 }}>
-                TO CONNECT TV - Vos abonnements streaming & plus encore
+                TO CONNECT - Vos abonnements streaming & plus encore
               </div>
             </div>
             <div className="col header-top-right d-none d-lg-block">

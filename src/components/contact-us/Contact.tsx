@@ -36,7 +36,7 @@ const Contact = () => {
     try {
       // Send contact message via WhatsApp link + email to admin
       const whatsappMsg = encodeURIComponent(
-        `Nouveau message de contact TO CONNECT TV:\n\nNom: ${formData.nom}\nEmail: ${formData.email}\nTel: ${formData.telephone}\n\nMessage:\n${formData.message}`
+        `Nouveau message de contact TO CONNECT:\n\nNom: ${formData.nom}\nEmail: ${formData.email}\nTel: ${formData.telephone}\n\nMessage:\n${formData.message}`
       );
       window.open(`https://wa.me/22967357728?text=${whatsappMsg}`, "_blank");
 
@@ -145,7 +145,7 @@ const Contact = () => {
                 }}
               >
                 <h3 style={{ fontWeight: 700, marginBottom: "15px" }}>
-                  TO CONNECT TV
+                  TO CONNECT
                 </h3>
                 <p style={{ opacity: 0.8, lineHeight: 1.6, marginBottom: "25px" }}>
                   Votre plateforme d'abonnements streaming et boutique en ligne.

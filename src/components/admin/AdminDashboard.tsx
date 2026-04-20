@@ -16,7 +16,7 @@ const getPlatformColor = (plateforme: string) => {
   return colors[plateforme] || "#6c5ce7";
 };
 
-type Tab = "type_comptes" | "comptes" | "abonnements" | "articles" | "utilisateurs";
+type Tab = "type_comptes" | "comptes" | "abonnements" | "articles" | "utilisateurs" | "codes";
 
 function AdminDashboard() {
   const router = useRouter();
@@ -34,6 +34,8 @@ function AdminDashboard() {
   const [typeComptes, setTypeComptes] = useState<any[]>([]);
   const [comptes, setComptes] = useState<any[]>([]);
   const [utilisateurs, setUtilisateurs] = useState<any[]>([]);
+  const [promoCodes, setPromoCodes] = useState<any[]>([]);
+  const [promoHistory, setPromoHistory] = useState<any[]>([]);
   const [articles, setArticles] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,13 +50,15 @@ function AdminDashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [aboRes, tcRes, cRes, uRes, artRes, catRes] = await Promise.allSettled([
+      const [aboRes, tcRes, cRes, uRes, artRes, catRes, promoRes, promoHistRes] = await Promise.allSettled([
         abonnementsService.getAll(),
         abonnementsService.getTypeComptes(),
         adminService.getComptes(),
         adminService.getUtilisateurs(),
         articlesService.getAllAdmin(),
         categoriesService.all(),
+        adminService.getPromoCodes(),
+        adminService.getPromoCodeHistory(),
       ]);
       if (aboRes.status === "fulfilled") setAbonnements(aboRes.value.data?.data || aboRes.value.data || []);
       if (tcRes.status === "fulfilled") setTypeComptes(tcRes.value.data?.data || tcRes.value.data || []);
@@ -62,6 +66,8 @@ function AdminDashboard() {
       if (uRes.status === "fulfilled") setUtilisateurs(uRes.value.data?.data || uRes.value.data || []);
       if (artRes.status === "fulfilled") setArticles(artRes.value.data?.data || artRes.value.data || []);
       if (catRes.status === "fulfilled") setCategories(catRes.value.data?.data || catRes.value.data || []);
+      if (promoRes.status === "fulfilled") setPromoCodes(promoRes.value.data?.data || promoRes.value.data || []);
+      if (promoHistRes.status === "fulfilled") setPromoHistory(promoHistRes.value.data?.data || promoHistRes.value.data || []);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   }, []);
@@ -90,6 +96,7 @@ function AdminDashboard() {
     { key: "abonnements", label: "Abonnements", count: abonnements.length, icon: "fi-rr-play" },
     { key: "articles", label: "Articles", count: articles.length, icon: "fi-rr-shopping-bag" },
     { key: "utilisateurs", label: "Utilisateurs", count: utilisateurs.length, icon: "fi-rr-users" },
+    { key: "codes", label: "Codes points", count: promoCodes.length, icon: "fi-rr-ticket" },
   ];
 
   return (
@@ -98,7 +105,7 @@ function AdminDashboard() {
       <div style={{ background: "#fff", borderBottom: "1px solid #eee", padding: "15px 30px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#e50914", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.9rem" }}><i className="fi-rr-settings"></i></div>
-          <div><span style={{ fontWeight: 700, fontSize: "1rem" }}>TO CONNECT TV</span><span style={{ display: "block", fontSize: "0.75rem", color: "#999" }}>Administration</span></div>
+          <div><span style={{ fontWeight: 700, fontSize: "1rem" }}>TO CONNECT</span><span style={{ display: "block", fontSize: "0.75rem", color: "#999" }}>Administration</span></div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <button onClick={() => setShowAddAdmin(true)} style={{ ...btnStyle, background: "#e50914", padding: "8px 18px", fontSize: "0.85rem" }}><i className="fi-rr-plus"></i> Ajouter admin</button>
@@ -135,6 +142,7 @@ function AdminDashboard() {
             {activeTab === "abonnements" && <AbonnementsTab data={abonnements} onRefresh={fetchData} />}
             {activeTab === "articles" && <ArticlesTab data={articles} categories={categories} onRefresh={fetchData} />}
             {activeTab === "utilisateurs" && <UtilisateursTab data={utilisateurs} />}
+            {activeTab === "codes" && <PromoCodesTab codes={promoCodes} history={promoHistory} onRefresh={fetchData} />}
           </>
         )}
       </div>
@@ -560,6 +568,103 @@ function UtilisateursTab({ data }: { data: any[] }) {
         ))}
       </tbody></table>
     </div></div>
+  );
+}
+
+function PromoCodesTab({ codes, history, onRefresh }: { codes: any[]; history: any[]; onRefresh: () => void }) {
+  const [generatedCode, setGeneratedCode] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const generateRandomCode = () => {
+    const random = Math.random().toString(36).slice(2, 8).toUpperCase();
+    setGeneratedCode(`TC-${Date.now().toString().slice(-4)}-${random}`);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleConfirm = async () => {
+    if (!generatedCode) {
+      setError("Generez d'abord un code");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      await adminService.createPromoCode({ code: generatedCode, pointsValue: 0.05 });
+      setSuccess("Code enregistre en base");
+      setGeneratedCode("");
+      onRefresh();
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Erreur lors de l'enregistrement");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div>
+      <div style={formCardStyle}>
+        <h4 style={{ fontWeight: 700, marginBottom: "16px" }}>Generation de code points</h4>
+        {error && <AlertMsg type="error" text={error} />}
+        {success && <AlertMsg type="success" text={success} />}
+        <div className="row">
+          <div className="col-md-8">
+            <FormField label="Code genere" value={generatedCode} onChange={setGeneratedCode} placeholder="Cliquez sur Generer" />
+          </div>
+          <div className="col-md-4" style={{ display: "flex", alignItems: "end", gap: "8px", paddingBottom: "15px" }}>
+            <button onClick={generateRandomCode} style={{ ...btnStyle, background: "#111827", padding: "10px 14px", fontSize: "0.85rem" }}>
+              Generer
+            </button>
+            <button onClick={handleConfirm} disabled={saving} style={{ ...btnStyle, padding: "10px 14px", fontSize: "0.85rem", opacity: saving ? 0.7 : 1 }}>
+              {saving ? "..." : "Confirmer"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style={tableCardStyle}>
+        <div style={{ padding: "16px", borderBottom: "1px solid #eee", fontWeight: 700 }}>Codes disponibles (utilisables 1 fois)</div>
+        {codes.length === 0 ? <EmptyState text="Aucun code actif" /> : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}><thead><tr style={theadRowStyle}>
+              <Th>Code</Th><Th>Points</Th><Th>Date</Th>
+            </tr></thead><tbody>
+              {codes.map((code: any) => (
+                <tr key={code.id} style={tbodyRowStyle}>
+                  <Td style={{ fontWeight: 700 }}>{code.code}</Td>
+                  <Td>+{Number(code.pointsValue || code.points_value || 0).toFixed(2)}</Td>
+                  <Td>{code.createdAt ? new Date(code.createdAt).toLocaleString("fr-FR") : "-"}</Td>
+                </tr>
+              ))}
+            </tbody></table>
+          </div>
+        )}
+      </div>
+
+      <div style={{ ...tableCardStyle, marginTop: "16px" }}>
+        <div style={{ padding: "16px", borderBottom: "1px solid #eee", fontWeight: 700 }}>Historique (qui a fait quoi)</div>
+        {history.length === 0 ? <EmptyState text="Aucun historique" /> : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}><thead><tr style={theadRowStyle}>
+              <Th>Action</Th><Th>Code</Th><Th>User/Admin</Th><Th>Points</Th><Th>Date</Th>
+            </tr></thead><tbody>
+              {history.map((h: any) => (
+                <tr key={h.id} style={tbodyRowStyle}>
+                  <Td>{h.action}</Td>
+                  <Td style={{ fontWeight: 700 }}>{h.code}</Td>
+                  <Td>{h.utilisateurId || h.utilisateur_id ? `User #${h.utilisateurId || h.utilisateur_id}` : h.adminId || h.admin_id ? `Admin #${h.adminId || h.admin_id}` : "-"}</Td>
+                  <Td>{h.pointsAdded || h.points_added ? `+${Number(h.pointsAdded || h.points_added).toFixed(2)}` : "-"}</Td>
+                  <Td>{h.createdAt ? new Date(h.createdAt).toLocaleString("fr-FR") : "-"}</Td>
+                </tr>
+              ))}
+            </tbody></table>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

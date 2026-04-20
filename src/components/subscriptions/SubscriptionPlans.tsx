@@ -111,8 +111,8 @@ function SubscriptionPlans() {
           </div>
         ) : (
           <div className="row">
-            {filtered.map((plan: any, index: number) => (
-              <div key={plan.id} className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+            {filtered.slice(0, 8).map((plan: any, index: number) => (
+              <div key={plan.id} className="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
                 <Fade direction="up" triggerOnce duration={400} delay={index * 100}>
                   <div
                     style={{

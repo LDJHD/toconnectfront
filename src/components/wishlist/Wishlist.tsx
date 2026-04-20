@@ -48,7 +48,7 @@ const Wishlist = () => {
                 <div className="gi-vendor-card-header">
                   <h5>Favoris</h5>
                   <div className="gi-header-btn">
-                    <Link className="gi-btn-2" href="/shop-left-sidebar-col-3">
+                    <Link className="gi-btn-2" href="/boutique">
                       Voir la boutique
                     </Link>
                   </div>

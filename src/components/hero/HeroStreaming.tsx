@@ -66,10 +66,10 @@ function HeroStreaming() {
                     marginBottom: "20px",
                   }}
                 >
-                  Vos abonnements{" "}
-                  <span style={{ color: "#e50914" }}>streaming</span>
+                  Votre boutique{" "}
+                  <span style={{ color: "#e50914" }}>près de vous</span>
                   <br />
-                  au meilleur prix
+                  pour tous vos besoins
                 </h1>
                 <p
                   style={{
@@ -105,7 +105,7 @@ function HeroStreaming() {
                     Voir les Abonnements
                   </Link>
                   <Link
-                    href="/shop-left-sidebar-col-3"
+                    href="/boutique"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",

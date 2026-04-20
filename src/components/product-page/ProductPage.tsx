@@ -64,7 +64,7 @@ const ProductPage = ({
   if (!product) return (
     <div className="container" style={{ padding: "60px 0", textAlign: "center" }}>
       <h4>Produit non trouvé</h4>
-      <Link href="/shop-left-sidebar-col-3/" style={{ color: "#e50914" }}>Retour à la boutique</Link>
+      <Link href="/boutique/" style={{ color: "#e50914" }}>Retour à la boutique</Link>
     </div>
   );
 
@@ -122,7 +122,7 @@ const ProductPage = ({
             <div className="col-md-7" style={{ paddingLeft: "30px" }}>
               <div className="single-pro-content">
                 {product.category?.nom && (
-                  <Link href={`/shop-left-sidebar-col-3/?cat=${product.category.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}`} style={{ color: "#e50914", fontSize: "0.9rem", textTransform: "uppercase" }}>
+                  <Link href={`/boutique/?cat=${product.category.nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}`} style={{ color: "#e50914", fontSize: "0.9rem", textTransform: "uppercase" }}>
                     {product.category.nom}
                   </Link>
                 )}

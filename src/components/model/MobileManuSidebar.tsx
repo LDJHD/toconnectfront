@@ -13,7 +13,7 @@ const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, 
       {isMobileMenuOpen && (
         <div id="gi-mobile-menu" className="gi-mobile-menu gi-menu-open">
           <div className="gi-menu-title">
-            <span className="menu_title" style={{ color: "#e50914", fontWeight: 700 }}>TO CONNECT TV</span>
+            <span className="menu_title" style={{ color: "#e50914", fontWeight: 700 }}>TO CONNECT</span>
             <button onClick={closeMobileManu} className="gi-close-menu">
               x
             </button>
@@ -48,14 +48,14 @@ const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, 
                   </Link>
                   <Collapse in={activeMainMenu === "boutique"}>
                     <ul style={{ display: activeMainMenu === 'boutique' ? 'block' : 'none' }} className="sub-menu">
-                      <li><Link href="/shop-left-sidebar-col-3" onClick={closeMobileManu}>Tous les produits</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=supermarche" onClick={closeMobileManu}>Supermarche</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=vetement" onClick={closeMobileManu}>Vetement</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=chaussure" onClick={closeMobileManu}>Chaussure</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=accessoire" onClick={closeMobileManu}>Accessoire</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=alimentation" onClick={closeMobileManu}>Alimentation</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=restauration" onClick={closeMobileManu}>Restauration</Link></li>
-                      <li><Link href="/shop-left-sidebar-col-3/?cat=cosmetique" onClick={closeMobileManu}>Cosmetique</Link></li>
+                      <li><Link href="/boutique" onClick={closeMobileManu}>Tous les produits</Link></li>
+                      <li><Link href="/boutique/?cat=supermarche" onClick={closeMobileManu}>Supermarche</Link></li>
+                      <li><Link href="/boutique/?cat=vetement" onClick={closeMobileManu}>Vetement</Link></li>
+                      <li><Link href="/boutique/?cat=chaussure" onClick={closeMobileManu}>Chaussure</Link></li>
+                      <li><Link href="/boutique/?cat=accessoire" onClick={closeMobileManu}>Accessoire</Link></li>
+                      <li><Link href="/boutique/?cat=alimentation" onClick={closeMobileManu}>Alimentation</Link></li>
+                      <li><Link href="/boutique/?cat=restauration" onClick={closeMobileManu}>Restauration</Link></li>
+                      <li><Link href="/boutique/?cat=cosmetique" onClick={closeMobileManu}>Cosmetique</Link></li>
                     </ul>
                   </Collapse>
                 </li>

@@ -6,6 +6,7 @@ import { RootState } from "../../store";
 import { removeItem, updateQuantity } from "../../store/reducers/cartSlice";
 import Link from "next/link";
 import { showSuccessToast } from "../toast-popup/Toastify";
+import { authService } from "@/lib/services/auth";
 
 const Cart = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -13,6 +14,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const [shareLink, setShareLink] = useState("");
   const [copied, setCopied] = useState(false);
+  const [loyalty, setLoyalty] = useState<any>(null);
 
   const subTotal = cartItems.reduce(
     (acc: number, item: any) => acc + Number(item.prix || item.newPrice || 0) * item.quantity,
@@ -25,6 +27,30 @@ const Cart = () => {
       setShareLink(`${window.location.origin}/panier-partage/?sid=${sessionId}`);
     }
   }, [sessionId]);
+
+  useEffect(() => {
+    const syncLoyalty = async () => {
+      const raw = localStorage.getItem("login_user");
+      if (!raw) {
+        setLoyalty(null);
+        return;
+      }
+      const parsed = JSON.parse(raw);
+      const utilisateurId = Number(parsed?.utilisateur?.id);
+      if (!utilisateurId) return;
+      try {
+        const res = await authService.getLoyaltySummary(utilisateurId);
+        setLoyalty(res.data || null);
+      } catch {
+        setLoyalty(null);
+      }
+    };
+    syncLoyalty();
+  }, []);
+
+  const reductionPourcentage = Number(loyalty?.canApplyReduction ? loyalty?.reductionPourcentage || 0 : 0);
+  const reductionMontant = reductionPourcentage > 0 ? (subTotal * reductionPourcentage) / 100 : 0;
+  const totalFinal = subTotal - reductionMontant;
 
   const handleCopyLink = () => {
     if (shareLink) {
@@ -50,7 +76,7 @@ const Cart = () => {
         {cartItems.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
             <p style={{ fontSize: "20px", fontWeight: 300, marginBottom: "20px" }}>Votre panier est vide.</p>
-            <Link href="/shop-left-sidebar-col-3/" style={{ color: "#e50914", fontWeight: 600 }}>
+            <Link href="/boutique/" style={{ color: "#e50914", fontWeight: 600 }}>
               Continuer les achats
             </Link>
           </div>
@@ -72,9 +98,25 @@ const Cart = () => {
                       <div className="gi-cart-summary-total" style={{ marginTop: "15px", paddingTop: "15px", borderTop: "1px solid #eee" }}>
                         <span className="text-left" style={{ fontWeight: 700 }}>Total</span>
                         <span className="text-right" style={{ fontWeight: 700, color: "#e50914" }}>
-                          {subTotal.toLocaleString("fr-FR")} F
+                          {totalFinal.toLocaleString("fr-FR")} F
                         </span>
                       </div>
+                      {loyalty && (
+                        <div style={{ marginTop: "10px", fontSize: "0.82rem", color: "#555" }}>
+                          <div>Points: <strong>{Number(loyalty.points || 0).toFixed(2)}</strong> (partie entiere: {Math.floor(Number(loyalty.points || 0))})</div>
+                          {loyalty.statut === "vip" ? (
+                            <div style={{ color: "#e50914", fontWeight: 700 }}>Statut VIP</div>
+                          ) : reductionPourcentage > 0 ? (
+                            <>
+                              <div>Reduction active: <strong>{reductionPourcentage}%</strong></div>
+                              <div>Remise: -{reductionMontant.toLocaleString("fr-FR")} F</div>
+                              <div>Usages restants: {Number(loyalty.remainingUses || 0)} / 5</div>
+                            </>
+                          ) : (
+                            <div>Aucune reduction (active a partir de 2%)</div>
+                          )}
+                        </div>
+                      )}
                       <Link href="/checkout/" className="gi-btn-2" style={{ display: "block", textAlign: "center", marginTop: "15px", padding: "12px" }}>
                         Passer la commande
                       </Link>
@@ -183,7 +225,7 @@ const Cart = () => {
                       <div className="row">
                         <div className="col-lg-12">
                           <div className="gi-cart-update-bottom">
-                            <Link href="/shop-left-sidebar-col-3/">Continuer les achats</Link>
+                            <Link href="/boutique/">Continuer les achats</Link>
                             <Link href="/checkout/" className="gi-btn-2">Passer la commande</Link>
                           </div>
                         </div>

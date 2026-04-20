@@ -24,7 +24,7 @@ const SummerBanner = () => {
                         <h2>
                           Latest Exclusive <br></br>Summer Collection
                         </h2>
-                        <Link href="/shop-left-sidebar-col-3" className="gi-btn-2">
+                        <Link href="/boutique" className="gi-btn-2">
                           Shop now
                         </Link>
                       </div>

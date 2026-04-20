@@ -51,7 +51,7 @@ const TrendingFashionTwoItem = ({ data }) => {
             <a href="/product-left-sidebar">{data.title}</a>
           </h5>
           <h6 className="gi-pro-stitle">
-            <a href="/shop-left-sidebar-col-3">{data.name}</a>
+            <a href="/boutique">{data.name}</a>
           </h6>
           <div className="gi-pro-rat-price">
             <div className="gi-pro-rat-pri-inner">

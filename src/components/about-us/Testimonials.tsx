@@ -2,7 +2,7 @@
 
 const Testimonials = () => {
   const testimonials = [
-    { name: "Kofi A.", text: "Grâce à TO CONNECT TV, j'ai accès à Netflix et Spotify à des prix imbattables. Service rapide et fiable !", rating: 5 },
+    { name: "Kofi A.", text: "Grâce à TO CONNECT, j'ai accès à Netflix et Spotify à des prix imbattables. Service rapide et fiable !", rating: 5 },
     { name: "Aminata D.", text: "La boutique en ligne est super pratique. Livraison rapide à Cotonou !", rating: 5 },
     { name: "Jean-Marc T.", text: "Le pack alimentaire est une excellente idée. Je compose mon panier chaque semaine.", rating: 4 },
   ];

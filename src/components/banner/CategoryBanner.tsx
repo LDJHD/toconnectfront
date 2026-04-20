@@ -21,7 +21,7 @@ const CategoryBanner = () => {
                 <div className="gi-bnr-detail">
                   <h5>Fresh Fruits & veggies</h5>
                   <p>The flavor of something special.</p>
-                  <Link href="/shop-left-sidebar-col-3" className="gi-btn-2">
+                  <Link href="/boutique" className="gi-btn-2">
                     Shop Now
                   </Link>
                 </div>
@@ -43,7 +43,7 @@ const CategoryBanner = () => {
                 <div className="gi-bnr-detail">
                   <h5>Tasty Snack & Fastfood</h5>
                   <p>A healthy meal for every one.</p>
-                  <Link href="/shop-left-sidebar-col-3" className="gi-btn-2">
+                  <Link href="/boutique" className="gi-btn-2">
                     Shop Now
                   </Link>
                 </div>

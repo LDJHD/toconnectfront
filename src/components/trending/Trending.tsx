@@ -55,7 +55,7 @@ const Trending = () => {
                   Découvrez nos meilleurs produits
                 </h4>
                 <Link
-                  href="/shop-left-sidebar-col-3"
+                  href="/boutique"
                   style={{
                     display: "inline-block",
                     background: "#fff",

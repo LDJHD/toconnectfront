@@ -41,33 +41,33 @@ function HeaderManu() {
                           </ul>
                         </li>
                         <li className="dropdown drop-list">
-                          <Link href="/shop-left-sidebar-col-3/" className="dropdown-arrow">
+                          <Link href="/boutique/" className="dropdown-arrow">
                             Boutique<i className="fi-rr-angle-small-right"></i>
                           </Link>
                           <ul className="sub-menu">
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=supermarche">Supermarche</Link>
+                              <Link href="/boutique/?cat=supermarche">Supermarche</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=vetement">Vetement</Link>
+                              <Link href="/boutique/?cat=vetement">Vetement</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=chaussure">Chaussure</Link>
+                              <Link href="/boutique/?cat=chaussure">Chaussure</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=accessoire">Accessoire</Link>
+                              <Link href="/boutique/?cat=accessoire">Accessoire</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=alimentation">Alimentation</Link>
+                              <Link href="/boutique/?cat=alimentation">Alimentation</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=restauration">Restauration</Link>
+                              <Link href="/boutique/?cat=restauration">Restauration</Link>
                             </li>
                             <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=cosmetique">Cosmetique</Link>
+                              <Link href="/boutique/?cat=cosmetique">Cosmetique</Link>
                             </li>
                              <li>
-                              <Link href="/shop-left-sidebar-col-3/?cat=appartement">Appartement</Link>
+                              <Link href="/boutique/?cat=appartement">Appartement</Link>
                             </li>
                           </ul>
                         </li>

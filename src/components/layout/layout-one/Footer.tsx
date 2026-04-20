@@ -27,7 +27,7 @@ function Footer() {
                         <img
                           src={process.env.NEXT_PUBLIC_URL + "/assets/img/logo/logo.png"}
                           className="gi-footer-logo"
-                          alt="TO CONNECT TV"
+                          alt="TO CONNECT"
                           style={{ maxHeight: "40px" }}
                         />
                         <span style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e50914" }}>
@@ -114,19 +114,19 @@ function Footer() {
                     >
                       <ul className="align-itegi-center">
                         <li className="gi-footer-link">
-                          <a href="/shop-left-sidebar-col-3/?cat=supermarche">Supermarche</a>
+                          <a href="/boutique/?cat=supermarche">Supermarche</a>
                         </li>
                         <li className="gi-footer-link">
-                          <a href="/shop-left-sidebar-col-3/?cat=vetement">Vetement</a>
+                          <a href="/boutique/?cat=vetement">Vetement</a>
                         </li>
                         <li className="gi-footer-link">
-                          <a href="/shop-left-sidebar-col-3/?cat=chaussure">Chaussure</a>
+                          <a href="/boutique/?cat=chaussure">Chaussure</a>
                         </li>
                         <li className="gi-footer-link">
-                          <a href="/shop-left-sidebar-col-3/?cat=alimentation">Alimentation</a>
+                          <a href="/boutique/?cat=alimentation">Alimentation</a>
                         </li>
                         <li className="gi-footer-link">
-                          <a href="/shop-left-sidebar-col-3/?cat=cosmetique">Cosmetique</a>
+                          <a href="/boutique/?cat=cosmetique">Cosmetique</a>
                         </li>
                       </ul>
                     </motion.div>
@@ -265,7 +265,7 @@ function Footer() {
                       <div className="gi-copy">
                         Copyright &copy; {new Date().getFullYear()}{" "}
                         <Link className="site-name" href="/" style={{ color: "#e50914" }}>
-                          TO CONNECT TV
+                          TO CONNECT
                         </Link>{" "}
                         - Tous droits reserves.
                       </div>

@@ -9,4 +9,10 @@ export const authService = {
   verifyCode(email: string, code: string) {
     return api.post('/verifications/verify-code', { email, code })
   },
+  redeemPromoCode(code: string, utilisateurId: number) {
+    return api.post('/promo-codes/redeem', { code, utilisateurId })
+  },
+  getLoyaltySummary(utilisateurId: number) {
+    return api.get(`/utilisateurs/${utilisateurId}/loyalty-summary`)
+  },
 }
