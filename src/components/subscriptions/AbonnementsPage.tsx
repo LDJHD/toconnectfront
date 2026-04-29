@@ -125,7 +125,7 @@ function AbonnementsPage() {
               {filtered.map((plan: any, index: number) => {
                 const color = getPlatformColor(plan.plateforme);
                 return (
-                  <div key={plan.id} className="col-lg-4 col-md-6 col-sm-6 col-12 mb-4">
+                  <div key={plan.id} className="col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
                     <Fade direction="up" triggerOnce duration={400} delay={index * 80}>
                       <div
                         style={{
@@ -144,7 +144,8 @@ function AbonnementsPage() {
                         <div
                           style={{
                             position: "relative",
-                            height: "180px",
+                            width: "100%",
+                            aspectRatio: "1 / 1",
                             overflow: "hidden",
                           }}
                         >
@@ -181,33 +182,33 @@ function AbonnementsPage() {
                         </div>
 
                         {/* Body */}
-                        <div style={{ padding: "25px 20px", flex: 1, display: "flex", flexDirection: "column" }}>
+                        <div style={{ padding: "12px", flex: 1, display: "flex", flexDirection: "column" }}>
                           {plan.description && (
-                            <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "20px", lineHeight: 1.5 }}>
+                            <p className="d-none d-sm-block" style={{ color: "#666", fontSize: "0.82rem", marginBottom: "10px", lineHeight: 1.3 }}>
                               {plan.description}
                             </p>
                           )}
 
-                          <div style={{ marginBottom: "15px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                          <div style={{ marginBottom: "10px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                               <i className="fi-rr-check" style={{ color, fontSize: "0.8rem" }}></i>
-                              <span style={{ fontSize: "0.9rem" }}>
+                              <span style={{ fontSize: "0.8rem" }}>
                                 {plan.nombreEcran || plan.nombre_ecran} ecran{(plan.nombreEcran || plan.nombre_ecran) > 1 ? "s" : ""} simultane{(plan.nombreEcran || plan.nombre_ecran) > 1 ? "s" : ""}
                               </span>
                             </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                            <div className="d-none d-sm-flex" style={{ alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                               <i className="fi-rr-check" style={{ color, fontSize: "0.8rem" }}></i>
-                              <span style={{ fontSize: "0.9rem" }}>Acces immediat apres paiement</span>
+                              <span style={{ fontSize: "0.8rem" }}>Acces immediat apres paiement</span>
                             </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                            <div className="d-none d-sm-flex" style={{ alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                               <i className="fi-rr-check" style={{ color, fontSize: "0.8rem" }}></i>
-                              <span style={{ fontSize: "0.9rem" }}>Identifiants + profil + PIN inclus</span>
+                              <span style={{ fontSize: "0.8rem" }}>Identifiants + profil + PIN inclus</span>
                             </div>
                           </div>
 
                           <div style={{ marginTop: "auto" }}>
                             {/* Price tiers */}
-                            <div style={{ marginBottom: "15px" }}>
+                            <div style={{ marginBottom: "10px" }}>
                               {[
                                 { duree: 1, label: "1 mois", multiplier: 1 },
                                 { duree: 3, label: "3 mois", multiplier: 3 },
@@ -220,9 +221,9 @@ function AbonnementsPage() {
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
-                                    padding: "8px 0",
+                                    padding: "6px 0",
                                     borderBottom: "1px solid #f0f0f0",
-                                    fontSize: "0.9rem",
+                                    fontSize: "0.8rem",
                                   }}
                                 >
                                   <span style={{ color: "#555" }}>{tier.label}</span>
@@ -240,12 +241,12 @@ function AbonnementsPage() {
                                 textAlign: "center",
                                 background: "#ccc",
                                 color: "#fff",
-                                padding: "12px 20px",
+                                padding: "9px 12px",
                                 borderRadius: "10px",
                                 fontWeight: 700,
-                                fontSize: "0.95rem",
+                                fontSize: "0.82rem",
                                 cursor: "not-allowed",
-                                marginBottom: "10px",
+                                marginBottom: "6px",
                               }}
                             >
                               Souscrire maintenant
@@ -262,11 +263,11 @@ function AbonnementsPage() {
                                 textAlign: "center",
                                 background: "#25D366",
                                 color: "#fff",
-                                padding: "12px 20px",
+                                padding: "9px 12px",
                                 borderRadius: "10px",
                                 textDecoration: "none",
                                 fontWeight: 700,
-                                fontSize: "0.95rem",
+                                fontSize: "0.82rem",
                                 transition: "all 0.3s ease",
                                 boxShadow: "0 4px 15px rgba(37,211,102,0.3)",
                               }}

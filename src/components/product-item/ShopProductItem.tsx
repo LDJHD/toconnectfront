@@ -11,7 +11,7 @@ const ShopProductItem = ({
 }: any) => {
   const sizeProps = isList
     ? { xl: 12 }
-    : { xl: xl, lg: 4, xs: 12, sm: 6, md: 6 };
+    : { xl: xl, lg: 4, xs: 6, sm: 6, md: 6 };
 
   return (
     <Col

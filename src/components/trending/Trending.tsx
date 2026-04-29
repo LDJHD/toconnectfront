@@ -73,7 +73,7 @@ const Trending = () => {
             </Fade>
           </Col>
           {articles.slice(0, 3).map((article: any, i: number) => (
-            <Col key={i} xl={3} lg={6} md={6} sm={12} className="mb-4">
+            <Col key={i} xl={3} lg={6} md={6} sm={6} xs={6} className="mb-4">
               <Fade triggerOnce direction="up" delay={200 * (i + 1)}>
                 <div style={{
                   background: "#fff",

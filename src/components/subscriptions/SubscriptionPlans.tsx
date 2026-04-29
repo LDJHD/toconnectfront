@@ -112,7 +112,7 @@ function SubscriptionPlans() {
         ) : (
           <div className="row">
             {filtered.slice(0, 8).map((plan: any, index: number) => (
-              <div key={plan.id} className="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
+              <div key={plan.id} className="col-lg-3 col-md-6 col-sm-6 col-6 mb-4">
                 <Fade direction="up" triggerOnce duration={400} delay={index * 100}>
                   <div
                     style={{
@@ -131,8 +131,10 @@ function SubscriptionPlans() {
                     <div
                       style={{
                         position: "relative",
-                        height: "160px",
+                        width: "100%",
+                        aspectRatio: "1 / 1",
                         overflow: "hidden",
+                        background: "#f6f6f6",
                       }}
                     >
                       <img
@@ -169,29 +171,42 @@ function SubscriptionPlans() {
                     </div>
 
                     {/* Plan body */}
-                    <div style={{ padding: "20px", flex: 1, display: "flex", flexDirection: "column" }}>
-                      <h5 style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "8px" }}>
+                    <div style={{ padding: "12px", flex: 1, display: "flex", flexDirection: "column" }}>
+                      <h5
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "0.92rem",
+                          marginBottom: "6px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {plan.nom}
                       </h5>
                       {plan.description && (
-                        <p style={{ color: "#888", fontSize: "0.85rem", marginBottom: "12px", lineHeight: 1.4 }}>
+                        <p
+                          className="d-none d-sm-block"
+                          style={{ color: "#888", fontSize: "0.82rem", marginBottom: "8px", lineHeight: 1.3 }}
+                        >
                           {plan.description.substring(0, 80)}
                           {plan.description.length > 80 ? "..." : ""}
                         </p>
                       )}
-                      <div style={{ display: "flex", alignItems: "center", gap: "5px", marginBottom: "8px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px", marginBottom: "6px" }}>
                         <i className="fi-rr-screen" style={{ color: getPlatformColor(plan.plateforme) }}></i>
-                        <span style={{ fontSize: "0.85rem", color: "#555" }}>
+                        <span style={{ fontSize: "0.8rem", color: "#555" }}>
                           {plan.nombreEcran || plan.nombre_ecran} ecran{(plan.nombreEcran || plan.nombre_ecran) > 1 ? "s" : ""}
                         </span>
                       </div>
                       <div style={{ marginTop: "auto" }}>
                         <div
                           style={{
-                            fontSize: "1.5rem",
+                            fontSize: "1.1rem",
                             fontWeight: 800,
                             color: getPlatformColor(plan.plateforme),
-                            marginBottom: "12px",
+                            marginBottom: "8px",
+                            lineHeight: 1.1,
                           }}
                         >
                           {Number(plan.prix).toLocaleString("fr-FR")} F
@@ -203,12 +218,12 @@ function SubscriptionPlans() {
                             textAlign: "center",
                             background: "#ccc",
                             color: "#fff",
-                            padding: "10px 20px",
+                            padding: "9px 14px",
                             borderRadius: "10px",
                             fontWeight: 600,
-                            fontSize: "0.9rem",
+                            fontSize: "0.82rem",
                             cursor: "not-allowed",
-                            marginBottom: "8px",
+                            marginBottom: "6px",
                           }}
                         >
                           Souscrire
@@ -223,11 +238,11 @@ function SubscriptionPlans() {
                             textAlign: "center",
                             background: "#25D366",
                             color: "#fff",
-                            padding: "10px 20px",
+                            padding: "9px 14px",
                             borderRadius: "10px",
                             textDecoration: "none",
                             fontWeight: 600,
-                            fontSize: "0.9rem",
+                            fontSize: "0.82rem",
                             transition: "all 0.3s ease",
                           }}
                         >
