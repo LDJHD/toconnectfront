@@ -127,11 +127,11 @@ function HeaderTwo({ cartItems, wishlistItems }) {
                   <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
                     <img
                       src={process.env.NEXT_PUBLIC_URL + "/assets/img/logo/logo.png"}
-                      alt="TO CONNECT"
+                      alt="Tkp Store"
                       style={{ maxHeight: "45px" }}
                     />
                     {/* <span style={{ fontSize: "1.2rem", fontWeight: 700, color: "#e50914", lineHeight: 1.1 }}>
-                      TO CONNECT<br />
+                      Tkp Store<br />
                       <span style={{ fontSize: "0.7rem", color: "#333", fontWeight: 400 }}>TV & Boutique</span>
                     </span> */}
                   </Link>

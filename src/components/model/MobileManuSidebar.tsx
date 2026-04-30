@@ -13,7 +13,7 @@ const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, 
       {isMobileMenuOpen && (
         <div id="gi-mobile-menu" className="gi-mobile-menu gi-menu-open">
           <div className="gi-menu-title">
-            <span className="menu_title" style={{ color: "#e50914", fontWeight: 700 }}>TO CONNECT</span>
+            <span className="menu_title" style={{ color: "#e50914", fontWeight: 700 }}>Tkp Store</span>
             <button onClick={closeMobileManu} className="gi-close-menu">
               x
             </button>

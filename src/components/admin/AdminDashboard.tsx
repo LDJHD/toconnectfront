@@ -105,7 +105,7 @@ function AdminDashboard() {
       <div style={{ background: "#fff", borderBottom: "1px solid #eee", padding: "15px 30px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#e50914", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.9rem" }}><i className="fi-rr-settings"></i></div>
-          <div><span style={{ fontWeight: 700, fontSize: "1rem" }}>TO CONNECT</span><span style={{ display: "block", fontSize: "0.75rem", color: "#999" }}>Administration</span></div>
+          <div><span style={{ fontWeight: 700, fontSize: "1rem" }}>Tkp Store</span><span style={{ display: "block", fontSize: "0.75rem", color: "#999" }}>Administration</span></div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <button onClick={() => setShowAddAdmin(true)} style={{ ...btnStyle, background: "#e50914", padding: "8px 18px", fontSize: "0.85rem" }}><i className="fi-rr-plus"></i> Ajouter admin</button>

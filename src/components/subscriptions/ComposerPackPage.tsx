@@ -100,7 +100,7 @@ function ComposerPackPage() {
       .join("\n");
 
     const message =
-      `*COMMANDE PACK TO CONNECT*\n\n` +
+      `*COMMANDE PACK Tkp Store*\n\n` +
       `*Nom du pack :* ${packName}\n\n` +
       `*Articles :*\n${lignes}\n\n` +
       `*TOTAL : ${totalPack.toLocaleString("fr-FR")} F*\n\n` +

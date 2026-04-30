@@ -138,7 +138,7 @@ function HeroStreaming() {
               }}>
                 <img
                   src="/assets/img/hero-bg/heroimage1.jpg"
-                  alt="TOCONNECT - Streaming & Boutique"
+                  alt="Tkp Store - Streaming & Boutique"
                   style={{
                     width: "100%",
                     maxWidth: "500px",

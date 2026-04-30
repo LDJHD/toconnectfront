@@ -74,7 +74,7 @@ function SouscrirePage() {
     const ecrans = plan.nombreEcran || plan.nombre_ecran || 1;
 
     let msg =
-      `*COMMANDE ABONNEMENT - TO CONNECT*\n\n` +
+      `*COMMANDE ABONNEMENT - Tkp Store*\n\n` +
       `*Plateforme :* ${plan.plateforme}\n` +
       `*Formule :* ${plan.nom}\n` +
       `*Ecrans :* ${ecrans}\n` +

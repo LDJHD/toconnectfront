@@ -46,7 +46,7 @@ const About = () => {
                   </p>
                 </div>
                 <p>
-                  <strong>TOCONNECT</strong> est votre plateforme de confiance pour tous vos besoins.
+                  <strong>Tkp Store</strong> est votre plateforme de confiance pour tous vos besoins.
                   Que vous cherchiez des produits d'alimentation, des vêtements,
                   des chaussures, des accessoires ou des articles de косmétique,
                   nous avons tout ce qu'il vous faut.
@@ -63,7 +63,7 @@ const About = () => {
                 </p>
                 <p>
                   Découvrez notre large gamme de produits et laissez-vous tenter
-                  par nos offres exclusives. Bienvenue chez <strong>TOCONNECT</strong> -
+                  par nos offres exclusives. Bienvenue chez <strong>Tkp Store</strong> -
                   votre partenaire au quotidien.
                 </p>
               </div>

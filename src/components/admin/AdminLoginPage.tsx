@@ -166,7 +166,7 @@ function AdminLoginPage() {
             {view === "newpass" && "Nouveau mot de passe"}
           </h2>
           <p style={{ color: "#999", fontSize: "0.9rem" }}>
-            {view === "login" && "TO CONNECT"}
+            {view === "login" && "Tkp Store"}
             {view === "forgot" && "Entrez votre email pour recevoir un code"}
             {view === "code" && `Code envoye a ${forgotEmail}`}
             {view === "newpass" && "Choisissez votre nouveau mot de passe"}

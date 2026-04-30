@@ -1,7 +1,7 @@
 import AdminLoginPage from "@/components/admin/AdminLoginPage";
 
 export const metadata = {
-  title: "Administration - TO CONNECT",
+  title: "Administration - Tkp Store",
 };
 
 export default function Admin() {

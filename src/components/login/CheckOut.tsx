@@ -29,7 +29,7 @@ const buildWhatsAppMessage = (
   const adresse = [formData.adresse, formData.ville].filter(Boolean).join(", ");
 
   const msg =
-    `*COMMANDE TO CONNECT*\n\n` +
+    `*COMMANDE Tkp Store*\n\n` +
     `*Nom :* ${formData.nom}\n` +
     `*Telephone :* ${formData.telephone}\n` +
     (adresse ? `*Adresse :* ${adresse}\n` : "") +

@@ -27,7 +27,7 @@ function Footer() {
                         <img
                           src={process.env.NEXT_PUBLIC_URL + "/assets/img/logo/logo.png"}
                           className="gi-footer-logo"
-                          alt="TO CONNECT"
+                          alt="Tkp Store"
                           style={{ maxHeight: "40px" }}
                         />
                         <span style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e50914" }}>
@@ -265,7 +265,7 @@ function Footer() {
                       <div className="gi-copy">
                         Copyright &copy; {new Date().getFullYear()}{" "}
                         <Link className="site-name" href="/" style={{ color: "#e50914" }}>
-                          TO CONNECT
+                          Tkp Store
                         </Link>{" "}
                         - Tous droits reserves.
                       </div>

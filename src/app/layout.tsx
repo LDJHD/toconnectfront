@@ -8,7 +8,7 @@ interface RootLayoutProps {
 }
 
 export const metadata = {
-  title: "TO CONNECT - Abonnements Streaming & Boutique en ligne",
+  title: "Tkp Store - Abonnements Streaming & Boutique en ligne",
   description: "Plateforme d'abonnements Netflix, Prime Video, Spotify, GogoFlix et boutique en ligne au Benin",
   icons: {
     icon: "/favicon.ico",
