@@ -280,6 +280,8 @@ function HeaderTwo({ cartItems, wishlistItems }) {
         closeMobileManu={closeMobileManu}
         toggleMainMenu={toggleMainMenu}
         activeMainMenu={activeMainMenu}
+        cartCount={cartItems?.length || 0}
+        wishlistCount={wishlistItems?.length || 0}
       />
 
       {showCodeModal && (

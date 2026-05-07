@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Collapse from 'react-bootstrap/Collapse';
 
-const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, activeMainMenu }) => {
+const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, activeMainMenu, cartCount = 0, wishlistCount = 0 }) => {
   return (
     <>
       <div
@@ -19,6 +19,127 @@ const MobileManuSidebar = ({ isMobileMenuOpen, closeMobileManu, toggleMainMenu, 
             </button>
           </div>
           <div className="gi-menu-inner">
+            <div style={{ padding: "12px 15px 0" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <Link
+                  href="/login"
+                  onClick={closeMobileManu}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    padding: "10px 8px",
+                    borderRadius: "12px",
+                    border: "1px solid #eee",
+                    textDecoration: "none",
+                    color: "#111827",
+                    background: "#fff",
+                  }}
+                >
+                  <i className="fi-rr-user" style={{ fontSize: "1.1rem" }}></i>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>Compte</span>
+                </Link>
+
+                <Link
+                  href="/wishlist"
+                  onClick={closeMobileManu}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    padding: "10px 8px",
+                    borderRadius: "12px",
+                    border: "1px solid #eee",
+                    textDecoration: "none",
+                    color: "#111827",
+                    background: "#fff",
+                    position: "relative",
+                  }}
+                >
+                  <i className="fi-rr-heart" style={{ fontSize: "1.1rem" }}></i>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>Favoris</span>
+                  {wishlistCount > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "6px",
+                        right: "8px",
+                        minWidth: "18px",
+                        height: "18px",
+                        padding: "0 5px",
+                        borderRadius: "999px",
+                        background: "#e50914",
+                        color: "#fff",
+                        fontSize: "0.72rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 800,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Link>
+
+                <Link
+                  href="/cart"
+                  onClick={closeMobileManu}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    padding: "10px 8px",
+                    borderRadius: "12px",
+                    border: "1px solid #eee",
+                    textDecoration: "none",
+                    color: "#111827",
+                    background: "#fff",
+                    position: "relative",
+                  }}
+                >
+                  <i className="fi-rr-shopping-bag" style={{ fontSize: "1.1rem" }}></i>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>Panier</span>
+                  {cartCount > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "6px",
+                        right: "8px",
+                        minWidth: "18px",
+                        height: "18px",
+                        padding: "0 5px",
+                        borderRadius: "999px",
+                        background: "#e50914",
+                        color: "#fff",
+                        fontSize: "0.72rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 800,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
+            </div>
             <div className="gi-menu-content">
               <ul>
                 <li>
