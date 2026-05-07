@@ -1,0 +1,8 @@
+export { articlesService } from './articles'
+export { categoriesService } from './categories'
+export { panierService } from './panier'
+export { commandesService } from './commandes'
+export { abonnementsService } from './abonnements'
+export { packsService } from './packs'
+export { adminService } from './admin'
+export { authService } from './auth'

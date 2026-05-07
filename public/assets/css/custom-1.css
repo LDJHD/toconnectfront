@@ -1,0 +1,29 @@
+/* Category Card Hover Styles */
+.cat-card {
+  display: block;
+  text-decoration: none;
+}
+
+.cat-card .cat-card-inner {
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px 15px;
+  text-align: center;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.cat-card:hover .cat-card-inner {
+  border-color: #e50914;
+  box-shadow: 0 4px 20px rgba(229,9,20,0.15);
+}
+
+.cat-card:hover .cat-icon {
+  color: #e50914 !important;
+}
+
+.cat-card:hover .cat-title {
+  color: #e50914 !important;
+}
