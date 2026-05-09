@@ -1,7 +1,7 @@
 import api from '../api'
 
 export interface CreateCommandeData {
-  sessionId: string | null
+  sessionId: string
   utilisateurNom: string
   utilisateurEmail: string
   utilisateurTelephone: string

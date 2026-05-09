@@ -113,8 +113,17 @@ const CheckOut = () => {
     }
 
     try {
+      // Ensure we always send the SAME sessionId used by the cart/panier
+      let sid = (sessionId || "").trim();
+      if (!sid && typeof window !== "undefined") {
+        sid = (localStorage.getItem("cart_session_id") || "").trim();
+        if (!sid) {
+          sid = "sess_" + Date.now() + "_" + Math.random().toString(36).substring(2, 10);
+          localStorage.setItem("cart_session_id", sid);
+        }
+      }
       const res = await commandesService.create({
-        sessionId,
+        sessionId: sid,
         utilisateurNom: formData.nom,
         utilisateurEmail: formData.email,
         utilisateurTelephone: formData.telephone,
