@@ -112,6 +112,16 @@ const CheckOut = () => {
       return;
     }
 
+    // Ouvre une fenêtre vide pendant le geste utilisateur (évite le blocage popup après await)
+    let whatsPopup: Window | null = null;
+    if (typeof window !== "undefined") {
+      try {
+        whatsPopup = window.open("", "_blank");
+      } catch {
+        whatsPopup = null;
+      }
+    }
+
     try {
       // Ensure we always send the SAME sessionId used by the cart/panier
       let sid = (sessionId || "").trim();
@@ -131,18 +141,31 @@ const CheckOut = () => {
         notes: formData.notes || undefined,
       });
       const payload = res.data || {};
-      const url = payload.whatsappLinkClient || payload.whatsappLinkAdmin;
-      if (url) {
-        window.open(url, "_blank");
-      } else {
+      let targetUrl = payload.whatsappLinkClient || payload.whatsappLinkAdmin;
+      if (!targetUrl) {
         const message = buildWhatsAppMessage(formData, cartItems, totalFinal, viewLink);
-        const encoded = encodeURIComponent(message);
-        window.open(`https://wa.me/${WA_NUMBER}?text=${encoded}`, "_blank");
+        targetUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+      }
+
+      if (typeof window !== "undefined") {
+        if (whatsPopup && !whatsPopup.closed) {
+          try {
+            whatsPopup.location.href = targetUrl;
+          } catch {
+            whatsPopup.close();
+            window.location.href = targetUrl;
+          }
+        } else {
+          window.location.href = targetUrl;
+        }
       }
 
       dispatch(clearCart());
-      showSuccessToast("Commande creee. Redirection WhatsApp...");
+      showSuccessToast("Commande creee. Ouverture de WhatsApp...");
     } catch (error: any) {
+      if (whatsPopup && !whatsPopup.closed) {
+        whatsPopup.close();
+      }
       showErrorToast(error?.response?.data?.message || "Erreur lors de la creation de commande");
     }
   };

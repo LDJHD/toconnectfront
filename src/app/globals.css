@@ -305,3 +305,38 @@ a {
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.35);
   }
 }
+
+/* Compte connecté : flèche menu déroulant (desktop) */
+.gi-header-bottons .gi-acc-chevron {
+  font-size: 11px;
+  line-height: 1;
+  color: #28a745;
+  transition: transform 0.25s ease;
+}
+
+.gi-header-bottons .gi-acc-drop:hover .gi-acc-chevron {
+  transform: rotate(180deg);
+}
+
+.gi-header-bottons .gi-acc-has-submenu .gi-acc-chevron {
+  display: inline-block;
+}
+
+/* Compte connecté : flèche sur tuile mobile */
+.gi-mobile-account-tile {
+  position: relative;
+}
+
+.gi-mobile-account-chevron {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.7rem;
+  color: #28a745;
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+
+.gi-mobile-account-tile.is-open .gi-mobile-account-chevron {
+  transform: rotate(180deg);
+}

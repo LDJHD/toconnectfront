@@ -36,6 +36,8 @@ const ProductPage = ({
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.wishlist);
   const sessionId = useSelector((state: RootState) => state.cart.sessionId);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const inCart = product ? cartItems.some((item: any) => item.id === product.id) : false;
 
   useEffect(() => {
     if (!productId) {
@@ -155,8 +157,20 @@ const ProductPage = ({
                     <span style={{ padding: "8px 15px", fontWeight: 700 }}>{quantity}</span>
                     <button onClick={() => setQuantity(quantity + 1)} style={{ border: "none", background: "none", padding: "8px 15px", fontSize: "1.2rem", cursor: "pointer" }}>+</button>
                   </div>
-                  <button onClick={handleCart} style={{ background: "#e50914", color: "#fff", border: "none", padding: "10px 25px", borderRadius: "8px", fontWeight: 700, cursor: "pointer" }}>
-                    Ajouter au panier
+                  <button
+                    onClick={handleCart}
+                    aria-pressed={inCart}
+                    style={{
+                      background: inCart ? "#198754" : "#e50914",
+                      color: "#fff",
+                      border: "none",
+                      padding: "10px 25px",
+                      borderRadius: "8px",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {inCart ? "Dans le panier" : "Ajouter au panier"}
                   </button>
                   <button onClick={handleWishlist} style={{ background: isInWishlist ? "#e50914" : "#f5f5f5", color: isInWishlist ? "#fff" : "#333", border: "none", padding: "10px 15px", borderRadius: "8px", cursor: "pointer" }}>
                     <i className="fi-rr-heart"></i>

@@ -163,16 +163,59 @@ function HeaderTwo({ cartItems, wishlistItems }) {
                   <div className="gi-acc-drop">
                     <Link
                       href=""
-                      className="gi-header-btn gi-header-user dropdown-toggle gi-user-toggle gi-header-rtl-btn"
-                      title="Compte"
+                      className={
+                        "gi-header-btn gi-header-user dropdown-toggle gi-user-toggle gi-header-rtl-btn" +
+                        (isAuthenticated ? " gi-acc-has-submenu" : "")
+                      }
+                      title={isAuthenticated ? "Survolez pour dérouler le menu" : "Compte"}
                     >
-                      <div className="header-icon">
-                        <i className="fi-rr-user"></i>
+                      <div
+                        className="header-icon"
+                        style={
+                          isAuthenticated
+                            ? {
+                                position: "relative",
+                                border: "2px solid #28a745",
+                                borderRadius: "50%",
+                              }
+                            : undefined
+                        }
+                      >
+                        <i className="fi-rr-user" style={isAuthenticated ? { color: "#28a745" } : undefined}></i>
+                        {isAuthenticated && (
+                          <span
+                            aria-hidden
+                            style={{
+                              position: "absolute",
+                              right: "-1px",
+                              bottom: "-1px",
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              background: "#28a745",
+                              border: "2px solid #fff",
+                            }}
+                          />
+                        )}
                       </div>
                       <div className="gi-btn-desc">
                         <span className="gi-btn-title">Compte</span>
-                        <span className="gi-btn-stitle">
-                          {isAuthenticated ? "Deconnexion" : "Connexion"}
+                        <span
+                          className="gi-btn-stitle"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          {isAuthenticated ? "Connecté" : "Connexion"}
+                          {isAuthenticated && (
+                            <i
+                              className="fi-rr-angle-small-down gi-acc-chevron"
+                              aria-hidden
+                              title="Dérouler le menu"
+                            />
+                          )}
                         </span>
                       </div>
                     </Link>

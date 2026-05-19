@@ -5,9 +5,8 @@ import Breadcrumb from "../breadcrumb/Breadcrumb";
 import { useRouter } from "next/navigation";
 import { Container, Form } from "react-bootstrap";
 import { showErrorToast, showSuccessToast } from "../toast-popup/Toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "@/store/reducers/registrationSlice";
-import { RootState } from "@/store";
 import { authService } from "@/lib/services/auth";
 
 const LoginPage = () => {
@@ -18,15 +17,15 @@ const LoginPage = () => {
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.registration.isAuthenticated
-  );
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
+    if (typeof window === "undefined") return;
+    const raw = localStorage.getItem("login_user");
+    const token = localStorage.getItem("auth_token");
+    if (raw && token) {
+      router.replace("/");
     }
-  }, [isAuthenticated, router]);
+  }, [router]);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -79,8 +78,10 @@ const LoginPage = () => {
       localStorage.setItem("auth_token", data.token);
 
       dispatch(login(userData));
-      showSuccessToast("Connexion reussie !");
-      router.push("/");
+      showSuccessToast("Vous êtes bien connecté. Bienvenue sur Tkp Store !");
+      setTimeout(() => {
+        router.replace("/");
+      }, 1600);
     } catch (err: any) {
       const msg = err?.response?.data?.message || "Code invalide ou expire";
       showErrorToast(msg);

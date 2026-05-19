@@ -24,6 +24,7 @@ interface Item {
 const TrendingItem = ({ data }) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
+  const inCart = cartItems.some((item: Item) => item.id === data.id);
 
   const handleCart = (data: Item) => {
     const isItemInCart = cartItems.some((item: Item) => item.id === data.id);
@@ -65,11 +66,15 @@ const TrendingItem = ({ data }) => {
               </div>
             </div>
             <a
-              className="add-to-cart"
-              title="Add To Cart"
+              className={"add-to-cart" + (inCart ? " active" : "")}
+              title={inCart ? "Dans le panier" : "Ajouter au panier"}
               onClick={() => handleCart(data)}
+              style={inCart ? { backgroundColor: "#5caf90", color: "#fff" } : undefined}
             >
-              <i className="fi-rr-shopping-basket"></i>
+              <i
+                className="fi-rr-shopping-basket"
+                style={inCart ? { color: "#fff" } : undefined}
+              ></i>
             </a>
           </div>
         </div>

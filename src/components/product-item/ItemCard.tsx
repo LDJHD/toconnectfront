@@ -26,6 +26,8 @@ const ItemCard = ({ data }: any) => {
     (state: RootState) => state.wishlist.wishlist
   );
   const sessionId = useSelector((state: RootState) => state.cart.sessionId);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const inCart = cartItems.some((item: any) => item.id === data.id);
 
   const nom = data.nom || data.title || "";
   const prix = data.prixPromo || data.prix || data.newPrice || 0;
@@ -148,11 +150,20 @@ const ItemCard = ({ data }: any) => {
                   <i className="fi-rr-eye"></i>
                 </button>
                 <button
-                  title="Ajouter au panier"
-                  className="gi-btn-group add-to-cart"
+                  title={inCart ? "Dans le panier" : "Ajouter au panier"}
+                  className={"gi-btn-group add-to-cart" + (inCart ? " active" : "")}
                   onClick={handleCart}
+                  aria-pressed={inCart}
+                  style={
+                    inCart
+                      ? { backgroundColor: "#5caf90", border: "none" }
+                      : undefined
+                  }
                 >
-                  <i className="fi-rr-shopping-basket"></i>
+                  <i
+                    className="fi-rr-shopping-basket"
+                    style={inCart ? { color: "#fff" } : undefined}
+                  ></i>
                 </button>
               </div>
             </div>
