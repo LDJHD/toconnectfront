@@ -141,11 +141,9 @@ const CheckOut = () => {
         notes: formData.notes || undefined,
       });
       const payload = res.data || {};
-      let targetUrl = payload.whatsappLinkClient || payload.whatsappLinkAdmin;
-      if (!targetUrl) {
-        const message = buildWhatsAppMessage(formData, cartItems, totalFinal, viewLink);
-        targetUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
-      }
+      const orderViewLink = payload.orderViewLink || viewLink;
+      const message = buildWhatsAppMessage(formData, cartItems, totalFinal, orderViewLink);
+      const targetUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
 
       if (typeof window !== "undefined") {
         if (whatsPopup && !whatsPopup.closed) {
