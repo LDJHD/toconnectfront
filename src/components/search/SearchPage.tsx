@@ -237,22 +237,24 @@ function SearchPage() {
                                   {Number(plan.prix).toLocaleString("fr-FR")} F
                                   <span style={{ fontSize: "0.8rem", fontWeight: 400, color: "#999" }}>/mois</span>
                                 </div>
-                                <span
+                                <Link
+                                  href={`/souscrire?typeCompteId=${plan.id}`}
                                   style={{
                                     display: "block",
                                     textAlign: "center",
-                                    background: "#ccc",
+                                    background: "#e50914",
                                     color: "#fff",
                                     padding: "10px 20px",
                                     borderRadius: "10px",
                                     fontWeight: 600,
                                     fontSize: "0.9rem",
-                                    cursor: "not-allowed",
+                                    textDecoration: "none",
                                     marginBottom: "8px",
+                                    transition: "all 0.3s ease",
                                   }}
                                 >
                                   Souscrire
-                                </span>
+                                </Link>
                                 <Link
                                   href={`/souscrire?typeCompteId=${plan.id}`}
                                   style={{

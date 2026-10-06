@@ -6,6 +6,7 @@ import { Fade } from "react-awesome-reveal";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
 import { showErrorToast, showSuccessToast } from "../toast-popup/Toastify";
 import { authService } from "@/lib/services/auth";
+import { paiementService } from "@/lib/services/paiement";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import Link from "next/link";
@@ -31,6 +32,11 @@ function MesAbonnementsPage() {
   const [abonnements, setAbonnements] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [countdown, setCountdown] = useState(0);
+  const [renouvellementEnCours, setRenouvellementEnCours] = useState<number | null>(null);
+
+  // Le plan (type de compte) rattaché à un abonnement.
+  // Le backend sérialise la relation sous "typecompte".
+  const planDe = (abo: any) => abo?.typeCompte || abo?.typecompte || abo?.type_compte || null;
 
   const isAuthenticated = useSelector((state: RootState) => state.registration.isAuthenticated);
   const user = useSelector((state: RootState) => state.registration.user);
@@ -79,6 +85,13 @@ function MesAbonnementsPage() {
       const data = res.data || res;
       setUserInfo(data.utilisateur || data.user);
       setAbonnements(data.abonnements || []);
+
+      // Conserve le token : il est nécessaire pour les actions protégées
+      // (renouvellement d'abonnement).
+      if (data.token && typeof window !== "undefined") {
+        localStorage.setItem("auth_token", data.token);
+      }
+
       setStep("results");
 
       if (!data.abonnements || data.abonnements.length === 0) {
@@ -88,6 +101,62 @@ function MesAbonnementsPage() {
       showErrorToast(err?.response?.data?.message || "Code invalide ou expire");
     } finally {
       setLoading(false);
+    }
+  };
+
+  /**
+   * Renouvelle un abonnement : on initie un paiement GeniusPay (mode
+   * "reabonnement") puis on redirige vers la page de paiement. Après le
+   * retour du paiement, /souscrire/succes appellera PUT /abonnements/reabonnement.
+   */
+  const handleRenouveler = async (abo: any) => {
+    const plan = planDe(abo);
+    if (!plan) {
+      showErrorToast("Plan d'abonnement introuvable pour cet abonnement.");
+      return;
+    }
+
+    const duree = 1;
+    const prix = Number(plan.prix);
+    const infos = {
+      nom: userInfo?.nom || "",
+      email: email || userInfo?.email || "",
+      telephone: userInfo?.telephone || "",
+    };
+
+    setRenouvellementEnCours(abo.id);
+    try {
+      const res = await paiementService.initierGeniusPay({
+        montant: prix * duree,
+        description: `Renouvellement ${plan.nom || plan.plateforme || ""}`,
+        ...infos,
+        metadata: {
+          mode: "reabonnement",
+          abonnementId: abo.id,
+          typeCompteId: plan.id,
+          duree,
+          montant: prix * duree,
+          prix,
+          plateforme: plan.plateforme || "",
+          nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
+          ...infos,
+        },
+      });
+
+      const checkoutUrl = res.data?.data?.checkoutUrl;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        showErrorToast("Impossible d'initialiser le paiement. Réessayez.");
+        setRenouvellementEnCours(null);
+      }
+    } catch (err: any) {
+      showErrorToast(
+        err?.response?.data?.error ||
+          err?.response?.data?.details ||
+          "Erreur lors de l'initialisation du paiement."
+      );
+      setRenouvellementEnCours(null);
     }
   };
 
@@ -293,7 +362,8 @@ function MesAbonnementsPage() {
                   <div className="row">
                     {abonnements.map((abo: any, index: number) => {
                       const active = isActive(abo);
-                      const platforme = abo.typeCompte?.plateforme || abo.type_compte?.plateforme || "N/A";
+                      const plan = planDe(abo);
+                      const platforme = plan?.plateforme || "N/A";
                       const color = getPlatformColor(platforme);
                       const dateFin = new Date(abo.dateFin || abo.date_fin);
 
@@ -320,7 +390,7 @@ function MesAbonnementsPage() {
                             >
                               <div>
                                 <h5 style={{ fontWeight: 700, marginBottom: "3px", fontSize: "1rem" }}>
-                                  {abo.typeCompte?.nom || abo.type_compte?.nom || "Abonnement"}
+                                  {plan?.nom || "Abonnement"}
                                 </h5>
                                 <span style={{ fontSize: "0.85rem", opacity: 0.9 }}>{platforme}</span>
                               </div>
@@ -386,6 +456,27 @@ function MesAbonnementsPage() {
                                   {dateFin.toLocaleDateString("fr-FR")}
                                 </span>
                               </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRenouveler(abo)}
+                                disabled={renouvellementEnCours !== null}
+                                style={{
+                                  width: "100%",
+                                  marginTop: "12px",
+                                  background: "#e50914",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "11px",
+                                  borderRadius: "12px",
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                  opacity: renouvellementEnCours !== null ? 0.6 : 1,
+                                }}
+                              >
+                                {renouvellementEnCours === abo.id
+                                  ? "Redirection vers le paiement..."
+                                  : "Renouveler"}
+                              </button>
                             </div>
                           </div>
                         </div>

@@ -6,6 +6,7 @@ import { Container } from "react-bootstrap";
 import { Fade } from "react-awesome-reveal";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
 import { abonnementsService } from "@/lib/services/abonnements";
+import { paiementService } from "@/lib/services/paiement";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3333";
 const WA_NUMBER = "22967357728";
@@ -43,6 +44,8 @@ function SouscrirePage() {
   const [plan, setPlan] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1); // 1: choix duree, 2: infos, 3: recapitulatif
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState("");
 
   // Form state
   const [duree, setDuree] = useState(1);
@@ -70,6 +73,47 @@ function SouscrirePage() {
 
   const montantTotal = plan ? Number(plan.prix) * duree : 0;
   const color = plan ? getPlatformColor(plan.plateforme) : "#e50914";
+
+  const lancerPaiement = async () => {
+    setPayError("");
+    if (!nom.trim() || !email.trim() || !telephone.trim()) {
+      setStep(2);
+      setPayError("Veuillez renseigner votre nom, email et numéro WhatsApp avant de payer.");
+      return;
+    }
+    setPaying(true);
+    try {
+      const res = await paiementService.initierGeniusPay({
+        montant: montantTotal,
+        description: `Abonnement ${plan.nom} - ${duree} mois`,
+        nom: nom.trim(),
+        email: email.trim(),
+        telephone: telephone.trim(),
+        metadata: {
+          typeCompteId: plan.id,
+          duree: duree,
+          montant: montantTotal,
+          prix: Number(plan.prix),
+          plateforme: plan.plateforme || "",
+          nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
+          nom: nom.trim(),
+          email: email.trim(),
+          telephone: telephone.trim(),
+        },
+      });
+      const checkoutUrl = res.data?.data?.checkoutUrl;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        setPayError("Impossible d'initialiser le paiement. Réessayez.");
+        setPaying(false);
+      }
+    } catch (err: any) {
+      console.error("Erreur initiation paiement:", err);
+      setPayError(err?.response?.data?.details || err?.response?.data?.error || "Erreur lors de l'initialisation du paiement.");
+      setPaying(false);
+    }
+  };
 
   const buildWhatsAppUrl = () => {
     if (!plan) return "#";
@@ -365,6 +409,22 @@ function SouscrirePage() {
                       </div>
                     </div>
 
+                    {payError && (
+                      <div
+                        style={{
+                          background: "#ffebee",
+                          borderRadius: "10px",
+                          padding: "12px 15px",
+                          marginBottom: "15px",
+                          fontSize: "0.85rem",
+                          color: "#c62828",
+                        }}
+                      >
+                        <i className="fi-rr-info" style={{ marginRight: "8px" }}></i>
+                        {payError}
+                      </div>
+                    )}
+
                     <div
                       style={{
                         background: "#e8f5e9",
@@ -376,7 +436,7 @@ function SouscrirePage() {
                       }}
                     >
                       <i className="fi-rr-info" style={{ marginRight: "8px" }}></i>
-                      En cliquant sur &quot;Confirmer via WhatsApp&quot;, vous serez redirige vers WhatsApp avec les details de votre commande. Notre equipe vous contactera pour finaliser.
+                      Vous serez redirige vers la page de paiement securisee GeniusPay (Mobile Money, Wave, carte bancaire). Vos identifiants vous seront envoyes par email et WhatsApp des le paiement confirme.
                     </div>
 
                     <div style={{ display: "flex", gap: "10px" }}>
@@ -394,33 +454,39 @@ function SouscrirePage() {
                       >
                         Modifier
                       </button>
-                      <a
-                        href={buildWhatsAppUrl()}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={lancerPaiement}
+                        disabled={paying}
                         style={{
                           flex: 1,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           gap: "10px",
-                          background: "#25D366",
+                          background: paying ? "#999" : color,
                           color: "#fff",
                           border: "none",
                           padding: "15px 40px",
                           borderRadius: "12px",
                           fontWeight: 700,
                           fontSize: "1.1rem",
-                          cursor: "pointer",
-                          textDecoration: "none",
-                          boxShadow: "0 4px 15px rgba(37,211,102,0.3)",
+                          cursor: paying ? "wait" : "pointer",
+                          opacity: paying ? 0.8 : 1,
+                          boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
                         }}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
-                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                        </svg>
-                        Confirmer via WhatsApp
-                      </a>
+                        {paying ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm" role="status" />
+                            Redirection vers le paiement...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fi-rr-shield-check" style={{ fontSize: "1.2rem" }}></i>
+                            Payer {montantTotal.toLocaleString("fr-FR")} F via GeniusPay
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 )}

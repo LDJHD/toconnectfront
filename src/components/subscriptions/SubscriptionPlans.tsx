@@ -214,22 +214,24 @@ function SubscriptionPlans() {
                           {Number(plan.prix).toLocaleString("fr-FR")} F
                           <span style={{ fontSize: "0.8rem", fontWeight: 400, color: "#999" }}>/mois</span>
                         </div>
-                        <span
+                        <Link
+                          href={`/souscrire?typeCompteId=${plan.id}`}
                           style={{
                             display: "block",
                             textAlign: "center",
-                            background: "#ccc",
+                            background: "#e50914",
                             color: "#fff",
                             padding: "9px 14px",
                             borderRadius: "10px",
                             fontWeight: 600,
                             fontSize: "0.82rem",
-                            cursor: "not-allowed",
+                            textDecoration: "none",
                             marginBottom: "6px",
+                            transition: "all 0.3s ease",
                           }}
                         >
                           Souscrire
-                        </span>
+                        </Link>
                         <Link
                           href={`/souscrire?typeCompteId=${plan.id}`}
                           style={{

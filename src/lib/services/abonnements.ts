@@ -4,7 +4,7 @@ export const abonnementsService = {
   // Type de comptes (plans disponibles)
   getTypeComptes() { return api.get('/type_comptes') },
   getTypeCompteById(id: number) { return api.get(`/type_comptes/${id}`) },
-  // Créer un abonnement
+  // Créer un abonnement (après paiement confirmé)
   create(data: {
     email: string
     nom: string
@@ -12,6 +12,10 @@ export const abonnementsService = {
     typeCompteId: number
     duree: number
     montant: number
+    prix: number
+    plateforme: string
+    nbEcran: number
+    referencePaiement: string
   }) { return api.post('/abonnementscreate', data) },
   // Lister / voir
   getAll() { return api.get('/abonnements') },

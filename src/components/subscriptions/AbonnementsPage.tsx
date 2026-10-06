@@ -236,23 +236,25 @@ function AbonnementsPage() {
                               ))}
                             </div>
 
-                            {/* Bouton Souscrire - desactive */}
-                            <span
+                            {/* Bouton Souscrire */}
+                            <Link
+                              href={`/souscrire/?typeCompteId=${plan.id}`}
                               style={{
                                 display: "block",
                                 textAlign: "center",
-                                background: "#ccc",
+                                background: "#e50914",
                                 color: "#fff",
                                 padding: "9px 12px",
                                 borderRadius: "10px",
                                 fontWeight: 700,
                                 fontSize: "0.82rem",
-                                cursor: "not-allowed",
+                                textDecoration: "none",
                                 marginBottom: "6px",
+                                transition: "all 0.3s ease",
                               }}
                             >
                               Souscrire maintenant
-                            </span>
+                            </Link>
 
                             {/* Bouton Prendre via WhatsApp */}
                             <Link
