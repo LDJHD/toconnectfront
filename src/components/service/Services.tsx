@@ -4,35 +4,29 @@ import { Row } from "react-bootstrap";
 import { Fade } from "react-awesome-reveal";
 
 const services = [
-  { icon: "fi-rr-shopping-cart", name: "Livraison rapide", title: "Livraison à Cotonou et environs" },
-  { icon: "fi-rr-shield-check", name: "Paiement sécurisé", title: "Transactions via FedAPI" },
+  { icon: "fi-rr-package", name: "Livraison rapide", title: "À Cotonou et ses environs" },
+  { icon: "fi-rr-shield-check", name: "Paiement sécurisé", title: "Transactions 100 % fiables" },
   { icon: "fi-rr-headset", name: "Support 24/7", title: "WhatsApp & Email" },
-  { icon: "fi-rr-bolt", name: "Accès instantané", title: "Abonnements activés en quelques minutes" },
+  { icon: "fi-rr-bolt", name: "Accès instantané", title: "Abonnements activés en minutes" },
 ];
 
 const Services = () => {
   return (
-    <section className="gi-service-section padding-tb-40">
+    <section style={{ padding: "64px 0", background: "#ffffff" }}>
       <div className="container">
-        <Row className="m-tb-minus-12">
+        <Row className="g-3 g-md-4">
           {services.map((item, index) => (
-            <Fade
-              triggerOnce
-              direction="up"
-              delay={400}
-              key={index}
-              className="gi-ser-content gi-ser-content-2 col-sm-6 col-md-6 col-lg-3 p-tp-12 wow fadeInUp"
-            >
-              <div className="gi-ser-inner">
-                <div className="gi-service-image">
-                  <i className={item.icon} style={{ color: "#e50914" }}></i>
-                </div>
-                <div className="gi-service-desc">
-                  <h3>{item.name}</h3>
+            <div key={index} className="col-sm-6 col-md-6 col-lg-3 grid-col">
+              <Fade triggerOnce direction="up" delay={index * 80} className="h-100">
+                <div className="ser-card">
+                  <div className="ser-icon">
+                    <i className={item.icon}></i>
+                  </div>
+                  <h5>{item.name}</h5>
                   <p>{item.title}</p>
                 </div>
-              </div>
-            </Fade>
+              </Fade>
+            </div>
           ))}
         </Row>
       </div>

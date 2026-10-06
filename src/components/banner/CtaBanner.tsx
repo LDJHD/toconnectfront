@@ -5,109 +5,93 @@ import { Fade } from "react-awesome-reveal";
 
 function CtaBanner() {
   return (
-    <section style={{ padding: "40px 0" }}>
+    <section style={{ padding: "48px 0 16px", background: "#ffffff" }}>
       <div className="container">
-        <div className="row" style={{ gap: "0" }}>
-          <div className="col-lg-6 col-md-6 mb-3">
-            <Fade direction="left" triggerOnce duration={400}>
+        <div className="row g-4 g-md-4">
+          {/* Bannière Abonnements */}
+          <div className="col-lg-6 col-md-6 grid-col">
+            <Fade direction="left" triggerOnce duration={400} className="h-100">
               <div
+                className="tkn-panel"
                 style={{
-                  background: "linear-gradient(135deg, #e50914, #b20710)",
-                  borderRadius: "16px",
-                  padding: "35px 30px",
-                  color: "#fff",
-                  position: "relative",
-                  overflow: "hidden",
-                  minHeight: "180px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+                  background: "linear-gradient(135deg, #e50914 0%, #b20710 60%, #8f0a12 100%)",
                 }}
               >
                 <div
-                  style={{
-                    position: "absolute",
-                    right: "-30px",
-                    bottom: "-30px",
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.1)",
-                  }}
+                  className="tkn-ring"
+                  style={{ width: "190px", height: "190px", right: "-50px", top: "-60px" }}
                 />
-                <h3 style={{ fontWeight: 700, fontSize: "1.4rem", marginBottom: "8px" }}>
-                  Abonnements Streaming
-                </h3>
-                <p style={{ opacity: 0.85, marginBottom: "15px", fontSize: "0.9rem" }}>
-                  A partir de 2 300 F/mois. Netflix, Prime Video, Spotify , Gogoflix...etc .Profitez de nos offres a prix reduit et sécurisé 
-                </p>
-                <Link
-                  href="/abonnements"
+                <div
+                  className="tkn-ring"
+                  style={{ width: "110px", height: "110px", right: "60px", bottom: "-40px" }}
+                />
+                <div className="tkn-ico" style={{ background: "rgba(255,255,255,0.16)" }}>
+                  <i className="fi-rr-play"></i>
+                </div>
+                <span
                   style={{
-                    display: "inline-block",
-                    background: "#fff",
-                    color: "#e50914",
-                    padding: "10px 25px",
-                    borderRadius: "30px",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    fontSize: "0.9rem",
-                    width: "fit-content",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    letterSpacing: "1px",
+                    textTransform: "uppercase",
+                    opacity: 0.85,
+                    marginBottom: "8px",
                   }}
                 >
-                  Decouvrir
+                  Streaming
+                </span>
+                <h3>Abonnements à partir de 2 300 F / mois</h3>
+                <p>
+                  Netflix, Prime Video, Spotify, GogoFlix… Activation immédiate et
+                  paiement sécurisé.
+                </p>
+                <Link href="/abonnements" className="tkn-btn tkn-btn-light" style={{ width: "fit-content" }}>
+                  Découvrir les offres
                 </Link>
               </div>
             </Fade>
           </div>
-          <div className="col-lg-6 col-md-6 mb-3">
-            <Fade direction="right" triggerOnce duration={400}>
+
+          {/* Bannière Boutique / Pack */}
+          <div className="col-lg-6 col-md-6 grid-col">
+            <Fade direction="right" triggerOnce duration={400} className="h-100">
               <div
+                className="tkn-panel"
                 style={{
-                  background: "linear-gradient(135deg, #1a1a2e, #16213e)",
-                  borderRadius: "16px",
-                  padding: "35px 30px",
-                  color: "#fff",
-                  position: "relative",
-                  overflow: "hidden",
-                  minHeight: "180px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+                  background: "linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #273449 100%)",
                 }}
               >
                 <div
-                  style={{
-                    position: "absolute",
-                    right: "-30px",
-                    bottom: "-30px",
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.05)",
-                  }}
+                  className="tkn-ring"
+                  style={{ width: "190px", height: "190px", right: "-50px", top: "-60px" }}
                 />
-                <h3 style={{ fontWeight: 700, fontSize: "1.4rem", marginBottom: "8px" }}>
-                  Composez votre Pack
-                </h3>
-                <p style={{ opacity: 0.85, marginBottom: "15px", fontSize: "0.9rem" }}>
-                  Selectionnez vos produits alimentaires et creez votre pack personnalise
-                </p>
-                <Link
-                  href="/composer-pack"
+                <div
+                  className="tkn-ring"
+                  style={{ width: "110px", height: "110px", right: "60px", bottom: "-40px" }}
+                />
+                <div className="tkn-ico" style={{ background: "rgba(229,9,20,0.22)" }}>
+                  <i className="fi-rr-shopping-bag" style={{ color: "#ff6b74" }}></i>
+                </div>
+                <span
                   style={{
-                    display: "inline-block",
-                    background: "#fff",
-                    color: "#1a1a2e",
-                    padding: "10px 25px",
-                    borderRadius: "30px",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    fontSize: "0.9rem",
-                    width: "fit-content",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    letterSpacing: "1px",
+                    textTransform: "uppercase",
+                    opacity: 0.75,
+                    marginBottom: "8px",
                   }}
                 >
-                  Composer
+                  Boutique
+                </span>
+                <h3>Composez votre pack personnalisé</h3>
+                <p>
+                  Sélectionnez vos produits, créez votre pack et recevez-le à
+                  Cotonou et ses environs.
+                </p>
+                <Link href="/composer-pack" className="tkn-btn tkn-btn-primary" style={{ width: "fit-content" }}>
+                  <i className="fi-rr-box-open"></i>
+                  Composer mon pack
                 </Link>
               </div>
             </Fade>

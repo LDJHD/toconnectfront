@@ -21,79 +21,68 @@ const Trending = () => {
   const [articles, setArticles] = useState<any[]>([]);
 
   useEffect(() => {
-    articlesService.featured().then((res) => {
-      setArticles((res.data || res).slice(0, 6));
-    }).catch(() => {});
+    articlesService
+      .featured()
+      .then((res) => {
+        setArticles((res.data || res).slice(0, 6));
+      })
+      .catch(() => {});
   }, []);
 
   if (articles.length === 0) return null;
 
   return (
-    <section style={{ padding: "50px 0", background: "#f8f9fa" }}>
+    <section style={{ padding: "72px 0", background: "#f6f8fb" }}>
       <div className="container">
-        <div className="text-center" style={{ marginBottom: "35px" }}>
-          <h2 style={{ fontWeight: 800, fontSize: "1.8rem" }}>
-            Produits <span style={{ color: "#e50914" }}>Tendance</span>
+        <div className="text-center" style={{ marginBottom: "38px" }}>
+          <span className="sec-eyebrow">
+            <i className="fi-rr-trophy"></i> Populaire
+          </span>
+          <h2 className="sec-title">
+            Produits <span>Tendance</span>
           </h2>
-          <p style={{ color: "#666" }}>Les articles les plus populaires du moment</p>
+          <p className="sec-subtitle">Les articles les plus populaires du moment.</p>
         </div>
         <Row>
-          <Col xl={3} lg={6} md={6} sm={12} className="mb-4">
-            <Fade triggerOnce direction="up">
-              <div style={{
-                background: "linear-gradient(135deg, #e50914, #b20710)",
-                borderRadius: "16px",
-                padding: "30px",
-                height: "100%",
-                minHeight: "280px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color: "#fff",
-              }}>
-                <h4 style={{ fontWeight: 800, marginBottom: "15px" }}>
-                  Découvrez nos meilleurs produits
-                </h4>
-                <Link
-                  href="/boutique"
-                  style={{
-                    display: "inline-block",
-                    background: "#fff",
-                    color: "#e50914",
-                    padding: "10px 20px",
-                    borderRadius: "8px",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    width: "fit-content",
-                  }}
-                >
+          {/* Panneau promo */}
+          <Col xl={3} lg={6} md={6} sm={12} className="mb-4 grid-col">
+            <Fade triggerOnce direction="up" className="h-100">
+              <div
+                className="tkn-panel"
+                style={{
+                  background: "linear-gradient(150deg, #0f172a 0%, #1a2440 60%, #241637 100%)",
+                }}
+              >
+                <div className="tkn-ring" style={{ width: "160px", height: "160px", right: "-50px", top: "-50px" }} />
+                <div className="tkn-ico" style={{ background: "rgba(229,9,20,0.22)" }}>
+                  <i className="fi-rr-crown" style={{ color: "#ff6b74" }}></i>
+                </div>
+                <h3>Découvrez nos meilleurs produits</h3>
+                <p>Des sélections soignées, des prix justes, une livraison rapide.</p>
+                <Link href="/boutique" className="tkn-btn tkn-btn-primary" style={{ width: "fit-content" }}>
                   Voir la boutique
                 </Link>
               </div>
             </Fade>
           </Col>
           {articles.slice(0, 3).map((article: any, i: number) => (
-            <Col key={i} xl={3} lg={6} md={6} sm={6} xs={6} className="mb-4">
-              <Fade triggerOnce direction="up" delay={200 * (i + 1)}>
-                <div style={{
-                  background: "#fff",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  height: "100%",
-                }}>
-                  <img
-                    src={getMainImage(article)}
-                    alt={article.nom}
-                    style={{ width: "100%", height: "180px", objectFit: "cover" }}
-                  />
-                  <div style={{ padding: "15px" }}>
-                    <h6 style={{ fontWeight: 700, marginBottom: "5px" }}>{article.nom}</h6>
-                    <p style={{ color: "#e50914", fontWeight: 700, margin: 0 }}>
-                      {Number(article.prix).toLocaleString("fr-FR")} F
-                    </p>
+            <Col key={i} xl={3} lg={6} md={6} sm={6} xs={6} className="mb-4 grid-col">
+              <Fade triggerOnce direction="up" delay={120 * (i + 1)} className="h-100">
+                <Link
+                  href={`/product-left-sidebar/?id=${article.id}`}
+                  style={{ textDecoration: "none", display: "flex", width: "100%" }}
+                  className="prod-card"
+                >
+                  <div className="prod-card-media">
+                    <img src={getMainImage(article)} alt={article.nom} />
                   </div>
-                </div>
+                  <div className="prod-card-body">
+                    <h6>{article.nom}</h6>
+                    <div className="prod-price">
+                      <strong>{Number(article.prix).toLocaleString("fr-FR")} F</strong>
+                    </div>
+                  </div>
+                </Link>
               </Fade>
             </Col>
           ))}

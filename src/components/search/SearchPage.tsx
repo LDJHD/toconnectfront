@@ -130,19 +130,7 @@ function SearchPage() {
                 ) : (
                   <div className="row">
                     {abonnementResults.map((plan: any) => {
-                      const getPlatformColor = (plateforme: string) => {
-                        const colors: Record<string, string> = {
-                          Netflix: "#25D366",
-                          "Prime Video": "#00a8e1",
-                          Spotify: "#1db954",
-                          GogoFlix: "#f5a623",
-                          CapCut: "#111111",
-                          Disney: "#113ccf",
-                          "Disney+": "#113ccf",
-                          "Disney Plus": "#113ccf",
-                        };
-                        return colors[plateforme] || "#6c5ce7";
-                      };
+                      const getPlatformColor = (_plateforme: string) => "#e50914";
                       const DEFAULT_PLATFORM_IMAGES: Record<string, string> = {
                         Netflix: "/assets/img/category/netflix.jpeg",
                         "Prime Video": "/assets/img/category/prime.jpeg",

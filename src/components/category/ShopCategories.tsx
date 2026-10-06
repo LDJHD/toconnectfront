@@ -3,6 +3,18 @@
 import Link from "next/link";
 import { Fade } from "react-awesome-reveal";
 import { useState, useEffect } from "react";
+import type { IconType } from "react-icons";
+import {
+  TbBasket,      // Supermarché
+  TbShirt,       // Vêtements
+  TbShoe,        // Chaussures
+  TbDiamond,     // Accessoires
+  TbBread,       // Alimentation
+  TbChefHat,     // Restauration
+  TbPerfume,     // Cosmétique
+  TbBuildingCommunity, // Appartement
+  TbPackage,     // catégorie inconnue (repli)
+} from "react-icons/tb";
 import { categoriesService } from "@/lib/services/categories";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3333";
@@ -10,16 +22,23 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:333
 const normalize = (s: string) =>
   (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
-const defaultCategories = [
-  { nom: "Supermarche", slug: "supermarche", icon: "fi-rr-shopping-cart", color: "#ff6b6b" },
-  { nom: "Vetement", slug: "vetement", icon: "fi-rr-shopping-bag", color: "#6c5ce7" },
-  { nom: "Chaussure", slug: "chaussure", icon: "fi-rr-man-head", color: "#e50914" },
-  { nom: "Accessoire", slug: "accessoire", icon: "fi-rr-diamond", color: "#fdcb6e" },
-  { nom: "Alimentation", slug: "alimentation", icon: "fi-rr-restaurant", color: "#e17055" },
-  { nom: "Restauration", slug: "restauration", icon: "fi-rr-utensils", color: "#0984e3" },
-  { nom: "Cosmetique", slug: "cosmetique", icon: "fi-rr-flower", color: "#e84393" },
-  { nom: "Appartement", slug: "appartement", icon: "fi-rr-home", color: "#877f83" },
+type CategoryDef = { nom: string; slug: string; Icon: IconType };
+
+const defaultCategories: CategoryDef[] = [
+  { nom: "Supermarché", slug: "supermarche", Icon: TbBasket },
+  { nom: "Vêtements", slug: "vetement", Icon: TbShirt },
+  { nom: "Chaussures", slug: "chaussure", Icon: TbShoe },
+  { nom: "Accessoires", slug: "accessoire", Icon: TbDiamond },
+  { nom: "Alimentation", slug: "alimentation", Icon: TbBread },
+  { nom: "Restauration", slug: "restauration", Icon: TbChefHat },
+  { nom: "Cosmétique", slug: "cosmetique", Icon: TbPerfume },
+  { nom: "Appartement", slug: "appartement", Icon: TbBuildingCommunity },
 ];
+
+const catIconFor = (nom: string, slug?: string): IconType => {
+  const s = slug || normalize(nom);
+  return defaultCategories.find((d) => d.slug === s)?.Icon || TbPackage;
+};
 
 function ShopCategories() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -40,86 +59,50 @@ function ShopCategories() {
     fetchCategories();
   }, []);
 
-  const displayCategories = categories.length > 0 ? categories : defaultCategories;
+  const displayCategories = (categories.length > 0 ? categories : defaultCategories).slice(0, 8);
 
   return (
-    <section style={{ padding: "60px 0", background: "#f9f9f9" }}>
+    <section style={{ padding: "72px 0", background: "#f6f8fb" }}>
       <div className="container">
         <Fade direction="up" triggerOnce duration={400}>
-          <div className="text-center" style={{ marginBottom: "40px" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "10px" }}>
-              Notre <span style={{ color: "#e50914" }}>Boutique</span>
+          <div className="text-center" style={{ marginBottom: "38px" }}>
+            <span className="sec-eyebrow">
+              <i className="fi-rr-shopping-cart"></i> Boutique
+            </span>
+            <h2 className="sec-title">
+              Nos <span>Catégories</span>
             </h2>
-            <p style={{ color: "#666", maxWidth: "500px", margin: "0 auto" }}>
-              Decouvrez nos categories de produits et trouvez tout ce dont vous avez besoin
+            <p className="sec-subtitle">
+              Découvrez nos univers produits et trouvez tout ce dont vous avez
+              besoin, le tout au même endroit.
             </p>
           </div>
         </Fade>
 
-        <div className="row justify-content-center">
+        <div className="row g-3 g-md-4 justify-content-center">
           {displayCategories.map((cat: any, index: number) => {
             const slugValue = cat.slug || normalize(cat.nom);
-            const defaultCat = defaultCategories.find(
-              (d) => d.slug === slugValue
-            );
-            const color = defaultCat?.color || "#6c5ce7";
-            const icon = defaultCat?.icon || "fi-rr-box-open";
-
+            const Icon = catIconFor(cat.nom, slugValue);
             return (
-              <div key={cat.id || index} className="col-lg-3 col-md-4 col-sm-6 col-6 mb-4">
-                <Fade direction="up" triggerOnce duration={400} delay={index * 80}>
+              <div key={cat.id || index} className="col-lg-3 col-md-4 col-sm-6 col-6 grid-col cat-cell">
+                <Fade direction="up" triggerOnce duration={400} delay={index * 60} className="h-100 w-100">
                   <Link
                     href={`/boutique?cat=${slugValue}`}
-                    className="cat-card"
+                    className="cat-link"
                     style={{ textDecoration: "none" }}
                   >
-                    <div
-                      className="cat-card-inner"
-                    >
-                      {cat.image ? (
-                        <img
-                          src={`${BACKEND_URL}${cat.image}`}
-                          alt={cat.nom}
-                          style={{
-                            width: "60px",
-                            height: "60px",
-                            objectFit: "cover",
-                            borderRadius: "12px",
-                            marginBottom: "12px",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="cat-icon"
-                          style={{
-                            width: "60px",
-                            height: "60px",
-                            borderRadius: "12px",
-                            background: `${color}15`,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto 12px",
-                            fontSize: "1.5rem",
-                            color: color,
-                          }}
-                        >
-                          <i className={icon}></i>
-                        </div>
-                      )}
-                      <h6
-                        className="cat-title"
-                        style={{
-                          fontWeight: 600,
-                          fontSize: "0.95rem",
-                          color: "#333",
-                          margin: 0,
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        {cat.nom}
-                      </h6>
-                    </div>
+                    {cat.image ? (
+                      <img
+                        src={`${BACKEND_URL}${cat.image}`}
+                        alt={cat.nom}
+                        className="cat-img"
+                      />
+                    ) : (
+                      <div className="cat-icon" aria-hidden="true">
+                        <Icon />
+                      </div>
+                    )}
+                    <h6 className="cat-title">{cat.nom}</h6>
                   </Link>
                 </Fade>
               </div>

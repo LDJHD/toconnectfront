@@ -30,8 +30,8 @@ function Footer() {
                           alt="Tkp Store"
                           style={{ maxHeight: "40px" }}
                         />
-                        <span style={{ fontSize: "1.1rem", fontWeight: 700, color: "#e50914" }}>
-                       
+                        <span style={{ fontSize: "1.05rem", fontWeight: 800, color: "#e50914", letterSpacing: "0.5px" }}>
+                          Tkp Store
                         </span>
                       </div>
                       <p className="gi-footer-detail">
@@ -41,14 +41,14 @@ function Footer() {
                       <div className="gi-app-store">
                         <a href="#" className="app-img">
                           <img
-                            src={process.env.NEXT_PUBLIC_URL + "/assets/img/app/android.png"}
+                            src="/assets/img/app/android.png"
                             className="adroid"
                             alt="android"
                           />
                         </a>
                         <a href="#" className="app-img">
                           <img
-                            src={process.env.NEXT_PUBLIC_URL + "/assets/img/app/apple.png"}
+                            src="/assets/img/app/apple.png"
                             className="apple"
                             alt="apple"
                           />
@@ -278,7 +278,7 @@ function Footer() {
                     <div className="footer-bottom-payment d-flex justify-content-center">
                       <div className="payment-link">
                         <img
-                          src={process.env.NEXT_PUBLIC_URL + "/assets/img/hero-bg/payment.png"}
+                          src="/assets/img/hero-bg/payment.png"
                           alt="payment"
                         />
                       </div>

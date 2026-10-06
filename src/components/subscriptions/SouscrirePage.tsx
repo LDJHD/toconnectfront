@@ -22,19 +22,8 @@ const DEFAULT_PLATFORM_IMAGES: Record<string, string> = {
   "Disney Plus": "/assets/img/category/disney.png",
 };
 
-const getPlatformColor = (plateforme: string) => {
-  const colors: Record<string, string> = {
-    Netflix: "#25D366",
-    "Prime Video": "#00a8e1",
-    Spotify: "#1db954",
-    GogoFlix: "#f5a623",
-    CapCut: "#111111",
-    Disney: "#113ccf",
-    "Disney+": "#113ccf",
-    "Disney Plus": "#113ccf",
-  };
-  return colors[plateforme] || "#6c5ce7";
-};
+// Couleur unifiée de la marque (design system v2)
+const getPlatformColor = (_plateforme: string) => "#e50914";
 
 function SouscrirePage() {
   const searchParams = useSearchParams();

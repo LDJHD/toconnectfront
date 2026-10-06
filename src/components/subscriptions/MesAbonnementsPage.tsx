@@ -13,16 +13,8 @@ import Link from "next/link";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3333";
 
-const getPlatformColor = (plateforme: string) => {
-  const colors: Record<string, string> = {
-    Netflix: "#e50914",
-    "Prime Video": "#00a8e1",
-    Spotify: "#1db954",
-    GogoFlix: "#f5a623",
-    CapCut: "#111111",
-  };
-  return colors[plateforme] || "#6c5ce7";
-};
+// Couleur unifiée de la marque (design system v2)
+const getPlatformColor = (_plateforme: string) => "#e50914";
 
 function MesAbonnementsPage() {
   const [email, setEmail] = useState("");
