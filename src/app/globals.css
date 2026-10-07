@@ -58,6 +58,13 @@ a {
   .hero-streaming-btns {
     justify-content: center !important;
   }
+  /* Stats (clients actifs…) et plateformes (Netflix, GogoFlix…) centrées */
+  .hero-stats {
+    justify-content: center !important;
+  }
+  .hero-platforms {
+    justify-content: center !important;
+  }
 }
 
 .disabled {
