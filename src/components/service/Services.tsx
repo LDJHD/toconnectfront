@@ -16,7 +16,7 @@ const Services = () => {
       <div className="container">
         <Row className="g-3 g-md-4">
           {services.map((item, index) => (
-            <div key={index} className="col-sm-6 col-md-6 col-lg-3 grid-col">
+            <div key={index} className="col-6 col-sm-6 col-md-6 col-lg-3 grid-col">
               <Fade triggerOnce direction="up" delay={index * 80} className="h-100">
                 <div className="ser-card">
                   <div className="ser-icon">
