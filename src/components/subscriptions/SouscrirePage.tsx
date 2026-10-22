@@ -41,6 +41,7 @@ function SouscrirePage() {
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [moyenPaiement, setMoyenPaiement] = useState<"fedapay" | "geniuspay">("fedapay");
 
   useEffect(() => {
     if (!typeCompteId) {
@@ -72,7 +73,7 @@ function SouscrirePage() {
     }
     setPaying(true);
     try {
-      const res = await paiementService.initierGeniusPay({
+      const data = {
         montant: montantTotal,
         description: `Abonnement ${plan.nom} - ${duree} mois`,
         nom: nom.trim(),
@@ -85,18 +86,22 @@ function SouscrirePage() {
           prix: Number(plan.prix),
           plateforme: plan.plateforme || "",
           nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
-          nom: nom.trim(),
+          nomComplet: nom.trim(),
           email: email.trim(),
           telephone: telephone.trim(),
         },
-      });
-      const checkoutUrl = res.data?.data?.checkoutUrl;
+      };
+      const res =
+        moyenPaiement === "fedapay"
+          ? await paiementService.initierFedaPay(data)
+          : await paiementService.initierGeniusPay(data);
+      const checkoutUrl = res.data?.data?.checkoutUrl || res.data?.checkoutUrl || res.data?.paymentUrl;
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
-      } else {
-        setPayError("Impossible d'initialiser le paiement. Réessayez.");
-        setPaying(false);
+        return;
       }
+      setPayError("Impossible d'initialiser le paiement. Réessayez.");
+      setPaying(false);
     } catch (err: any) {
       console.error("Erreur initiation paiement:", err);
       setPayError(err?.response?.data?.details || err?.response?.data?.error || "Erreur lors de l'initialisation du paiement.");
@@ -414,18 +419,46 @@ function SouscrirePage() {
                       </div>
                     )}
 
-                    <div
-                      style={{
-                        background: "#e8f5e9",
-                        borderRadius: "10px",
-                        padding: "15px",
-                        marginBottom: "20px",
-                        fontSize: "0.85rem",
-                        color: "#2e7d32",
-                      }}
-                    >
-                      <i className="fi-rr-info" style={{ marginRight: "8px" }}></i>
-                      Vous serez redirige vers la page de paiement securisee GeniusPay (Mobile Money, Wave, carte bancaire). Vos identifiants vous seront envoyes par email et WhatsApp des le paiement confirme.
+                    <div style={{ marginBottom: "20px" }}>
+                      <label style={{ display: "block", fontWeight: 600, marginBottom: "10px", color: "#333" }}>
+                        Moyen de paiement
+                      </label>
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          onClick={() => setMoyenPaiement("fedapay")}
+                          style={{
+                            flex: 1,
+                            minWidth: "140px",
+                            padding: "12px 16px",
+                            borderRadius: "12px",
+                            border: moyenPaiement === "fedapay" ? "2px solid #1f7a3e" : "1px solid #ddd",
+                            background: moyenPaiement === "fedapay" ? "#f6fff9" : "#fff",
+                            color: "#333",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          FedaPay (par défaut)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMoyenPaiement("geniuspay")}
+                          style={{
+                            flex: 1,
+                            minWidth: "140px",
+                            padding: "12px 16px",
+                            borderRadius: "12px",
+                            border: moyenPaiement === "geniuspay" ? "2px solid #e50914" : "1px solid #ddd",
+                            background: moyenPaiement === "geniuspay" ? "#fff6f6" : "#fff",
+                            color: "#333",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          GeniusPay
+                        </button>
+                      </div>
                     </div>
 
                     <div style={{ display: "flex", gap: "10px" }}>
@@ -472,7 +505,7 @@ function SouscrirePage() {
                         ) : (
                           <>
                             <i className="fi-rr-shield-check" style={{ fontSize: "1.2rem" }}></i>
-                            Payer {montantTotal.toLocaleString("fr-FR")} F via GeniusPay
+                            Payer {montantTotal.toLocaleString("fr-FR")} F via {moyenPaiement === "fedapay" ? "FedaPay" : "GeniusPay"}
                           </>
                         )}
                       </button>

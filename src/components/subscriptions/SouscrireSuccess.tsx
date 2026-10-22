@@ -14,6 +14,7 @@ function SouscrireSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const reference = searchParams.get("reference");
+  const transactionId = searchParams.get("transaction_id") || searchParams.get("id");
 
   const [status, setStatus] = useState("checking"); // checking | completed | failed
   const [abonnementCree, setAbonnementCree] = useState(false);
@@ -27,7 +28,8 @@ function SouscrireSuccessContent() {
   const traitementDemarre = useRef(false);
 
   useEffect(() => {
-    if (!reference) {
+    const ref = reference || transactionId;
+    if (!ref) {
       router.push("/abonnements");
       return;
     }
@@ -40,11 +42,13 @@ function SouscrireSuccessContent() {
 
     const check = async () => {
       try {
-        const res = await paiementService.verifierGeniusPay(reference);
+        const res = reference
+          ? await paiementService.verifierGeniusPay(reference)
+          : await paiementService.verifierFedaPay(ref);
         const data = res.data?.data || {};
-        const paiementStatus = data.status;
+        const paiementStatus = String(data.status || "").toLowerCase();
 
-        if (paiementStatus === "completed") {
+        if (paiementStatus === "completed" || paiementStatus === "approved" || paiementStatus === "paid" || paiementStatus === "success") {
           setStatus("completed");
           setDetails(data);
 
@@ -68,7 +72,7 @@ function SouscrireSuccessContent() {
                 prix: Number(metadata.prix || data.amount || 0),
                 plateforme: metadata.plateforme || "",
                 nbEcran: Number(metadata.nbEcran || 1),
-                referencePaiement: reference,
+                referencePaiement: ref,
               });
             } else {
               res = await abonnementsService.create({
@@ -81,7 +85,7 @@ function SouscrireSuccessContent() {
                 prix: Number(metadata.prix || data.amount || 0),
                 plateforme: metadata.plateforme || "",
                 nbEcran: Number(metadata.nbEcran || 1),
-                referencePaiement: reference,
+                referencePaiement: ref,
               });
             }
             // Le backend renvoie le chemin du PDF (identifiants + reçu) généré :
@@ -106,7 +110,8 @@ function SouscrireSuccessContent() {
         } else if (
           paiementStatus === "failed" ||
           paiementStatus === "cancelled" ||
-          paiementStatus === "expired"
+          paiementStatus === "expired" ||
+          paiementStatus === "canceled"
         ) {
           setStatus("failed");
           setErrorMsg(`Statut du paiement : ${paiementStatus}`);
@@ -156,7 +161,7 @@ function SouscrireSuccessContent() {
                     <>
                       <div className="spinner-border text-danger" style={{ width: "3rem", height: "3rem" }} />
                       <h3 style={{ fontWeight: 700, marginTop: "20px" }}>Vérification du paiement...</h3>
-                      <p style={{ color: "#999" }}>Référence : {reference}</p>
+                      <p style={{ color: "#999" }}>RéféRéférence : {ref}</p>
                     </>
                   )}
 

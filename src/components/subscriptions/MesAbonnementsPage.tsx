@@ -24,6 +24,7 @@ function MesAbonnementsPage() {
   const [abonnements, setAbonnements] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [countdown, setCountdown] = useState(0);
+  const [moyenPaiementRenouvellement, setMoyenPaiementRenouvellement] = useState<"fedapay" | "geniuspay">("fedapay");
   const [renouvellementEnCours, setRenouvellementEnCours] = useState<number | null>(null);
 
   // Le plan (type de compte) rattaché à un abonnement.
@@ -97,9 +98,8 @@ function MesAbonnementsPage() {
   };
 
   /**
-   * Renouvelle un abonnement : on initie un paiement GeniusPay (mode
-   * "reabonnement") puis on redirige vers la page de paiement. Après le
-   * retour du paiement, /souscrire/succes appellera PUT /abonnements/reabonnement.
+   * Renouvelle un abonnement : on initie un paiement FedaPay (par défaut) ou GeniusPay (mode
+   * "reabonnement") puis on redirige vers la page de paiement.
    */
   const handleRenouveler = async (abo: any) => {
     const plan = planDe(abo);
@@ -118,10 +118,12 @@ function MesAbonnementsPage() {
 
     setRenouvellementEnCours(abo.id);
     try {
-      const res = await paiementService.initierGeniusPay({
+      const data = {
         montant: prix * duree,
         description: `Renouvellement ${plan.nom || plan.plateforme || ""}`,
-        ...infos,
+        nom: infos.nom,
+        email: infos.email,
+        telephone: infos.telephone,
         metadata: {
           mode: "reabonnement",
           abonnementId: abo.id,
@@ -133,9 +135,13 @@ function MesAbonnementsPage() {
           nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
           ...infos,
         },
-      });
+      };
+      const res =
+        moyenPaiementRenouvellement === "fedapay"
+          ? await paiementService.initierFedaPay(data)
+          : await paiementService.initierGeniusPay(data);
 
-      const checkoutUrl = res.data?.data?.checkoutUrl;
+      const checkoutUrl = res.data?.data?.checkoutUrl || res.data?.checkoutUrl;
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
@@ -288,7 +294,7 @@ function MesAbonnementsPage() {
 
           {step === "results" && (
             <Fade triggerOnce duration={400}>
-              <div>
+              <div style={{ maxWidth: "700px", margin: "0 auto" }}>
                 {/* User info header */}
                 {userInfo && (
                   <div
@@ -297,7 +303,7 @@ function MesAbonnementsPage() {
                       borderRadius: "16px",
                       padding: "25px 30px",
                       color: "#fff",
-                      marginBottom: "30px",
+                      marginBottom: "25px",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
@@ -326,6 +332,58 @@ function MesAbonnementsPage() {
                     </Link>
                   </div>
                 )}
+
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: "12px",
+                    padding: "15px 20px",
+                    marginBottom: "25px",
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                    border: "1px solid #eee",
+                    display: "flex",
+                    gap: "10px",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div style={{ fontWeight: 600 }}>Moyen de paiement pour le renouvellement</div>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => setMoyenPaiementRenouvellement("fedapay")}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "10px",
+                        border: moyenPaiementRenouvellement === "fedapay" ? "2px solid #1f7a3e" : "1px solid #ddd",
+                        background: moyenPaiementRenouvellement === "fedapay" ? "#f6fff9" : "#fff",
+                        color: "#333",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      FedaPay (par défaut)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMoyenPaiementRenouvellement("geniuspay")}
+                      style={{
+                        padding: "8px 14px",
+                        borderRadius: "10px",
+                        border: moyenPaiementRenouvellement === "geniuspay" ? "2px solid #e50914" : "1px solid #ddd",
+                        background: moyenPaiementRenouvellement === "geniuspay" ? "#fff6f6" : "#fff",
+                        color: "#333",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      GeniusPay
+                    </button>
+                  </div>
+                </div>
 
                 {/* Abonnements list */}
                 {abonnements.length === 0 ? (
