@@ -15,6 +15,7 @@ function SouscrireSuccessContent() {
   const router = useRouter();
   const reference = searchParams.get("reference");
   const transactionId = searchParams.get("transaction_id") || searchParams.get("id");
+  const ref = reference || transactionId;
 
   const [status, setStatus] = useState("checking"); // checking | completed | failed
   const [abonnementCree, setAbonnementCree] = useState(false);
@@ -28,7 +29,6 @@ function SouscrireSuccessContent() {
   const traitementDemarre = useRef(false);
 
   useEffect(() => {
-    const ref = reference || transactionId;
     if (!ref) {
       router.push("/abonnements");
       return;
@@ -137,7 +137,7 @@ function SouscrireSuccessContent() {
     };
 
     check();
-  }, [reference, router]);
+  }, [ref, reference, router]);
 
   return (
     <>

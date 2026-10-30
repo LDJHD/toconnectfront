@@ -27,7 +27,8 @@ export const paiementService = {
     telephone?: string
     metadata?: Record<string, string | number>
   }) {
-    return api.post('/paiement/fedapay/initier', data)
+    // FedaPay peut mettre plusieurs secondes à répondre : on dépasse le timeout global.
+    return api.post('/paiement/fedapay/initier', data, { timeout: 30000 })
   },
 
   /**
