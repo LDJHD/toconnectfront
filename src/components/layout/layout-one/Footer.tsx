@@ -30,9 +30,9 @@ function Footer() {
                           alt="Tkp Store"
                           style={{ maxHeight: "40px" }}
                         />
-                        <span style={{ fontSize: "1.05rem", fontWeight: 800, color: "#e50914", letterSpacing: "0.5px" }}>
+                        {/* <span style={{ fontSize: "1.05rem", fontWeight: 800, color: "#e50914", letterSpacing: "0.5px" }}>
                           Tkp Store
-                        </span>
+                        </span> */}
                       </div>
                       <p className="gi-footer-detail">
                         Votre plateforme d'abonnements streaming et boutique en ligne.
