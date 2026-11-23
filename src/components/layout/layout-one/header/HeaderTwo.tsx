@@ -10,6 +10,7 @@ import { RootState } from "@/store";
 import { logout, setUserData } from "@/store/reducers/registrationSlice";
 import { setSearchTerm } from "@/store/reducers/filterReducer";
 import { authService } from "@/lib/services/auth";
+import { notificationsService } from "@/lib/services/notifications";
 
 function HeaderTwo({ cartItems, wishlistItems }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -25,6 +26,7 @@ function HeaderTwo({ cartItems, wishlistItems }) {
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [codeValue, setCodeValue] = useState("");
   const [userPoints, setUserPoints] = useState<number>(0);
+  const [notifUnread, setNotifUnread] = useState<number>(0);
   const [submittingCode, setSubmittingCode] = useState(false);
 
   useEffect(() => {
@@ -34,6 +36,20 @@ function HeaderTwo({ cartItems, wishlistItems }) {
     const points = Number(user?.utilisateur?.points || 0);
     setUserPoints(points);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    const fetchUnread = async () => {
+      try {
+        const res = await notificationsService.getMesNotifications();
+        if (!cancelled) setNotifUnread(res?.nonLues ?? 0);
+      } catch { /* ignore */ }
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 60000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [isAuthenticated]);
 
   const handleRedeemCode = async () => {
     const userdata = localStorage.getItem("login_user");
@@ -274,6 +290,43 @@ function HeaderTwo({ cartItems, wishlistItems }) {
                       )}
                     </ul>
                   </div>
+
+                  {/* Notifications */}
+                  {isAuthenticated && (
+                    <Link
+                      href="/notifications"
+                      className="gi-header-btn gi-header-rtl-btn"
+                      title="Notifications"
+                    >
+                      <div className="header-icon" style={{ position: "relative" }}>
+                        <i className="fi-rr-bell"></i>
+                        {notifUnread > 0 && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: "-6px",
+                              right: "-8px",
+                              background: "#e50914",
+                              color: "#fff",
+                              fontSize: "0.65rem",
+                              fontWeight: 700,
+                              borderRadius: "10px",
+                              padding: "1px 6px",
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {notifUnread > 99 ? "99+" : notifUnread}
+                          </span>
+                        )}
+                      </div>
+                      <div className="gi-btn-desc">
+                        <span className="gi-btn-title">Notifications</span>
+                        <span className="gi-btn-stitle">
+                          <b>{notifUnread}</b> non lues
+                        </span>
+                      </div>
+                    </Link>
+                  )}
 
                   {/* Wishlist */}
                   <Link

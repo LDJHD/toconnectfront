@@ -72,6 +72,7 @@ function SouscrireSuccessContent() {
                 prix: Number(metadata.prix || data.amount || 0),
                 plateforme: metadata.plateforme || "",
                 nbEcran: Number(metadata.nbEcran || 1),
+                  composition: metadata.composition || "",
                 referencePaiement: ref,
               });
             } else {
@@ -85,6 +86,7 @@ function SouscrireSuccessContent() {
                 prix: Number(metadata.prix || data.amount || 0),
                 plateforme: metadata.plateforme || "",
                 nbEcran: Number(metadata.nbEcran || 1),
+                  composition: metadata.composition || "",
                 referencePaiement: ref,
               });
             }
@@ -191,8 +193,8 @@ function SouscrireSuccessContent() {
                       {abonnementCree ? (
                         <p style={{ color: "#666", marginBottom: "5px" }}>
                           {mode === "reabonnement"
-                            ? "Votre abonnement a été renouvelé. Vos identifiants (compte, profil, PIN) restent les mêmes et vous ont été envoyés par email."
-                            : "Votre abonnement a été activé. Vos identifiants (compte, profil, PIN) vous ont été envoyés par email et WhatsApp."}
+                            ? "Votre abonnement a été renouvelé. Vos identifiants (compte, profil, PIN) ont été conservés ou réattribués automatiquement et vous ont été envoyés par email."
+                            : "Votre abonnement a été activé. Vos identifiants (compte, profil, PIN) vous ont été envoyés par email et par notification dans votre espace client."}
                         </p>
                       ) : (
                         <p style={{ color: "#e67e22", marginBottom: "5px" }}>

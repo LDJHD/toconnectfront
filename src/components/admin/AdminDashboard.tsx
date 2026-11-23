@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { adminService } from "@/lib/services/admin";
+import { notificationsService } from "@/lib/services/notifications";
 import { abonnementsService } from "@/lib/services/abonnements";
 import { articlesService } from "@/lib/services/articles";
 import { categoriesService } from "@/lib/services/categories";
@@ -12,7 +13,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:333
 // Couleur unifiée de la marque (design system v2)
 const getPlatformColor = (_plateforme: string) => "#e50914";
 
-type Tab = "type_comptes" | "comptes" | "abonnements" | "articles" | "utilisateurs" | "codes";
+type Tab = "type_comptes" | "comptes" | "profils" | "abonnements" | "notifications" | "articles" | "utilisateurs" | "codes";
 
 function AdminDashboard() {
   const router = useRouter();
@@ -29,6 +30,9 @@ function AdminDashboard() {
   const [abonnements, setAbonnements] = useState<any[]>([]);
   const [typeComptes, setTypeComptes] = useState<any[]>([]);
   const [comptes, setComptes] = useState<any[]>([]);
+  const [profils, setProfils] = useState<any[]>([]);
+  const [adminNotifications, setAdminNotifications] = useState<any[]>([]);
+  const [adminNotifUnread, setAdminNotifUnread] = useState(0);
   const [utilisateurs, setUtilisateurs] = useState<any[]>([]);
   const [promoCodes, setPromoCodes] = useState<any[]>([]);
   const [promoHistory, setPromoHistory] = useState<any[]>([]);
@@ -46,24 +50,31 @@ function AdminDashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [aboRes, tcRes, cRes, uRes, artRes, catRes, promoRes, promoHistRes] = await Promise.allSettled([
+      const [aboRes, tcRes, cRes, pRes, uRes, artRes, catRes, promoRes, promoHistRes, notifRes] = await Promise.allSettled([
         abonnementsService.getAll(),
         abonnementsService.getTypeComptes(),
         adminService.getComptes(),
+        adminService.getProfils(),
         adminService.getUtilisateurs(),
         articlesService.getAllAdmin(),
         categoriesService.all(),
         adminService.getPromoCodes(),
         adminService.getPromoCodeHistory(),
+        notificationsService.getAdminNotifications(),
       ]);
       if (aboRes.status === "fulfilled") setAbonnements(aboRes.value.data?.data || aboRes.value.data || []);
       if (tcRes.status === "fulfilled") setTypeComptes(tcRes.value.data?.data || tcRes.value.data || []);
       if (cRes.status === "fulfilled") setComptes(cRes.value.data?.data || cRes.value.data || []);
+      if (pRes.status === "fulfilled") setProfils(pRes.value.data?.data || pRes.value.data || []);
       if (uRes.status === "fulfilled") setUtilisateurs(uRes.value.data?.data || uRes.value.data || []);
       if (artRes.status === "fulfilled") setArticles(artRes.value.data?.data || artRes.value.data || []);
       if (catRes.status === "fulfilled") setCategories(catRes.value.data?.data || catRes.value.data || []);
       if (promoRes.status === "fulfilled") setPromoCodes(promoRes.value.data?.data || promoRes.value.data || []);
       if (promoHistRes.status === "fulfilled") setPromoHistory(promoHistRes.value.data?.data || promoHistRes.value.data || []);
+      if (notifRes.status === "fulfilled") {
+        setAdminNotifications(notifRes.value.data || []);
+        setAdminNotifUnread(notifRes.value.nonLues ?? 0);
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   }, []);
@@ -89,7 +100,9 @@ function AdminDashboard() {
   const tabs: { key: Tab; label: string; count: number; icon: string }[] = [
     { key: "type_comptes", label: "Formules", count: typeComptes.length, icon: "fi-rr-list" },
     { key: "comptes", label: "Comptes", count: comptes.length, icon: "fi-rr-user" },
+    { key: "profils", label: "Profils / PIN", count: profils.length, icon: "fi-rr-shield" },
     { key: "abonnements", label: "Abonnements", count: abonnements.length, icon: "fi-rr-play" },
+    { key: "notifications", label: "Notifications", count: adminNotifUnread, icon: "fi-rr-bell" },
     { key: "articles", label: "Articles", count: articles.length, icon: "fi-rr-shopping-bag" },
     { key: "utilisateurs", label: "Utilisateurs", count: utilisateurs.length, icon: "fi-rr-users" },
     { key: "codes", label: "Codes points", count: promoCodes.length, icon: "fi-rr-ticket" },
@@ -135,7 +148,9 @@ function AdminDashboard() {
           <>
             {activeTab === "type_comptes" && <TypeComptesTab data={typeComptes} onRefresh={fetchData} />}
             {activeTab === "comptes" && <ComptesTab data={comptes} onRefresh={fetchData} />}
+            {activeTab === "profils" && <ProfilsTab data={profils} comptes={comptes} onRefresh={fetchData} />}
             {activeTab === "abonnements" && <AbonnementsTab data={abonnements} onRefresh={fetchData} />}
+            {activeTab === "notifications" && <NotificationsTab data={adminNotifications} onRefresh={fetchData} />}
             {activeTab === "articles" && <ArticlesTab data={articles} categories={categories} onRefresh={fetchData} />}
             {activeTab === "utilisateurs" && <UtilisateursTab data={utilisateurs} />}
             {activeTab === "codes" && <PromoCodesTab codes={promoCodes} history={promoHistory} onRefresh={fetchData} />}
@@ -439,13 +454,13 @@ function ComptesTab({ data, onRefresh }: { data: any[]; onRefresh: () => void; }
   const [emailCompte, setEmailCompte] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [plateforme, setPlateforme] = useState("Netflix");
-  const [nbUtilisateurs, setNbUtilisateurs] = useState("8");
+  const [nbUtilisateurs, setNbUtilisateurs] = useState("0");
   const [dateExpiration, setDateExpiration] = useState("");
 
-  const resetForm = () => { setEmailCompte(""); setMotDePasse(""); setPlateforme("Netflix"); setNbUtilisateurs("8"); setDateExpiration(""); setEditing(null); setError(""); };
+  const resetForm = () => { setEmailCompte(""); setMotDePasse(""); setPlateforme("Netflix"); setNbUtilisateurs("0"); setDateExpiration(""); setEditing(null); setError(""); };
 
   const openEdit = (c: any) => {
-    setEditing(c); setEmailCompte(c.emailCompte || c.email_compte || ""); setMotDePasse(c.motDePasse || c.mot_de_passe || ""); setPlateforme(c.plateforme || "Netflix"); setNbUtilisateurs(String(c.nbUtilisateurs || c.nb_utilisateurs || "8"));
+    setEditing(c); setEmailCompte(c.emailCompte || c.email_compte || ""); setMotDePasse(c.motDePasse || c.mot_de_passe || ""); setPlateforme(c.plateforme || "Netflix"); setNbUtilisateurs(String(c.nbUtilisateurs ?? c.nb_utilisateurs ?? "0"));
     setDateExpiration(c.dateExpiration ? c.dateExpiration.substring(0, 10) : c.date_expiration ? c.date_expiration.substring(0, 10) : ""); setShowForm(true); setError("");
   };
 
@@ -524,11 +539,15 @@ function AbonnementsTab({ data, onRefresh }: { data: any[]; onRefresh: () => voi
     if (!confirm("Supprimer cet abonnement ?")) return;
     try { const api = (await import("@/lib/api")).default; await api.delete(`/abonnements/delete/${id}`); onRefresh(); } catch { alert("Erreur"); }
   };
+  const handleTerminer = async (id: number) => {
+    if (!confirm("Terminer cet abonnement ? La place sera libérée et le client notifié.")) return;
+    try { await adminService.terminerAbonnement(id); onRefresh(); } catch { alert("Erreur"); }
+  };
   if (data.length === 0) return <div style={tableCardStyle}><EmptyState text="Aucun abonnement" /></div>;
   return (
     <div style={tableCardStyle}><div style={{ overflowX: "auto" }}>
       <table style={tableStyle}><thead><tr style={theadRowStyle}>
-        <Th>ID</Th><Th>Utilisateur</Th><Th>Plateforme</Th><Th>Formule</Th><Th>Debut</Th><Th>Fin</Th><Th>Statut</Th><Th>Actions</Th>
+        <Th>ID</Th><Th>Utilisateur</Th><Th>Plateforme</Th><Th>Formule</Th><Th>Compte</Th><Th>Profil / PIN</Th><Th>Debut</Th><Th>Fin</Th><Th>Statut</Th><Th>Actions</Th>
       </tr></thead><tbody>
         {data.map((abo: any) => (
           <tr key={abo.id} style={tbodyRowStyle}>
@@ -536,10 +555,22 @@ function AbonnementsTab({ data, onRefresh }: { data: any[]; onRefresh: () => voi
             <Td><div><span style={{ fontWeight: 600, display: "block" }}>{abo.utilisateur?.nom || abo.nom || "-"}</span><span style={{ color: "#999", fontSize: "0.8rem" }}>{abo.utilisateur?.email || abo.email || ""}</span></div></Td>
             <Td><PlatformBadge name={abo.typeCompte?.plateforme || abo.type_compte?.plateforme || ""} /></Td>
             <Td>{abo.typeCompte?.nom || abo.type_compte?.nom || "-"}</Td>
+            <Td style={{ fontSize: "0.8rem" }}>{abo.compte?.emailCompte || abo.compte?.email_compte || "-"}</Td>
+            <Td style={{ fontSize: "0.8rem" }}>
+              <div style={{ fontWeight: 600 }}>{abo.profil?.nomProfil || abo.profil?.nom_profil || "-"}</div>
+              <div style={{ color: "#999" }}>PIN: {abo.profil?.pin || "-"}</div>
+            </Td>
             <Td style={{ color: "#999", fontSize: "0.8rem" }}>{(abo.dateDebut || abo.date_debut) ? new Date(abo.dateDebut || abo.date_debut).toLocaleDateString("fr-FR") : "-"}</Td>
             <Td style={{ color: "#999", fontSize: "0.8rem" }}>{(abo.dateFin || abo.date_fin) ? new Date(abo.dateFin || abo.date_fin).toLocaleDateString("fr-FR") : "-"}</Td>
             <Td><StatusBadge status={(abo.inactif || abo.fin) ? "inactif" : "actif"} /></Td>
-            <Td><button onClick={() => handleDelete(abo.id)} style={deleteBtnStyle} title="Supprimer"><i className="fi-rr-trash"></i></button></Td>
+            <Td>
+              <div style={{ display: "flex", gap: "6px" }}>
+                {!(abo.inactif || abo.fin) && (
+                  <button onClick={() => handleTerminer(abo.id)} style={{ ...editBtnStyle, background: "#fff7ed", color: "#c2410c" }} title="Terminer"><i className="fi-rr-stop"></i></button>
+                )}
+                <button onClick={() => handleDelete(abo.id)} style={deleteBtnStyle} title="Supprimer"><i className="fi-rr-trash"></i></button>
+              </div>
+            </Td>
           </tr>
         ))}
       </tbody></table>
@@ -659,6 +690,154 @@ function PromoCodesTab({ codes, history, onRefresh }: { codes: any[]; history: a
             </tbody></table>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+/* ==================== PROFILS ==================== */
+
+function ProfilsTab({ data, comptes, onRefresh }: { data: any[]; comptes: any[]; onRefresh: () => void }) {
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const [nomProfil, setNomProfil] = useState("");
+  const [pin, setPin] = useState("");
+  const [nbAbonnes, setNbAbonnes] = useState("0");
+  const [compteId, setCompteId] = useState("");
+
+  const resetForm = () => { setNomProfil(""); setPin(""); setNbAbonnes("0"); setCompteId(""); setEditing(null); setError(""); };
+
+  const openEdit = (p: any) => {
+    setEditing(p);
+    setNomProfil(p.nomProfil || p.nom_profil || "");
+    setPin(p.pin || "");
+    setNbAbonnes(String(p.nbAbonnes ?? p.nb_abonnes ?? "0"));
+    setCompteId(String(p.compteId || p.compte_id || ""));
+    setShowForm(true); setError("");
+  };
+
+  const handleSave = async () => {
+    if (!nomProfil || !pin) { setError("Nom du profil et PIN requis"); return; }
+    if (!editing && !compteId) { setError("Compte requis"); return; }
+    setSaving(true); setError("");
+    const payload: any = { nomProfil, pin, nbAbonnes: Number(nbAbonnes) };
+    if (editing) {
+      if (compteId) payload.compteId = Number(compteId);
+    } else {
+      payload.compteId = Number(compteId);
+    }
+    try {
+      if (editing) { await adminService.updateProfil(editing.id, payload); }
+      else { await adminService.createProfil(payload); }
+      resetForm(); setShowForm(false); onRefresh();
+    } catch (err: any) { setError(err?.response?.data?.message || "Erreur"); }
+    finally { setSaving(false); }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Supprimer ce profil ?")) return;
+    try { await adminService.deleteProfil(id); onRefresh(); } catch (err: any) { alert(err?.response?.data?.message || "Erreur"); }
+  };
+
+  const compteLabel = (c: any) => `${c.emailCompte || c.email_compte || "compte"} (${c.plateforme || ""})`;
+
+  return (
+    <div>
+      <div style={{ marginBottom: "15px" }}>
+        <button onClick={() => { resetForm(); setShowForm(!showForm); }} style={{ ...btnStyle, background: showForm ? "#666" : "#e50914" }}>
+          <i className={showForm ? "fi-rr-cross" : "fi-rr-plus"}></i> {showForm ? "Fermer" : "Ajouter un profil"}
+        </button>
+      </div>
+      {showForm && (
+        <div style={formCardStyle}>
+          <h4 style={{ fontWeight: 700, marginBottom: "20px" }}>{editing ? "Modifier le profil" : "Nouveau profil"}</h4>
+          {error && <AlertMsg type="error" text={error} />}
+          <div className="row">
+            {!editing && (
+              <div className="col-md-6">
+                <label style={labelStyle}>Compte *</label>
+                <select value={compteId} onChange={(e) => setCompteId(e.target.value)} className="form-control" style={inputStyle}>
+                  <option value="">-- Choisir --</option>
+                  {comptes.map((c: any) => <option key={c.id} value={c.id}>{compteLabel(c)}</option>)}
+                </select>
+              </div>
+            )}
+            <div className="col-md-6"><FormField label="Nom du profil *" value={nomProfil} onChange={setNomProfil} placeholder="Ex: Profil 1" /></div>
+            <div className="col-md-4"><FormField label="PIN (4-6 chiffres) *" value={pin} onChange={setPin} placeholder="0001" /></div>
+            <div className="col-md-4"><FormField label="Nb abonnés" type="number" value={nbAbonnes} onChange={setNbAbonnes} placeholder="0" /></div>
+          </div>
+          <SubmitBtn loading={saving} text={editing ? "Enregistrer" : "Creer"} onClick={handleSave} />
+        </div>
+      )}
+      <div style={tableCardStyle}>
+        {data.length === 0 ? <EmptyState text="Aucun profil" /> : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}><thead><tr style={theadRowStyle}>
+              <Th>ID</Th><Th>Compte</Th><Th>Plateforme</Th><Th>Profil</Th><Th>PIN</Th><Th>Abonnés</Th><Th>Actions</Th>
+            </tr></thead><tbody>
+              {data.map((p: any) => (
+                <tr key={p.id} style={tbodyRowStyle}>
+                  <Td>#{p.id}</Td>
+                  <Td style={{ fontSize: "0.8rem" }}>{p.compte?.emailCompte || p.compte?.email_compte || comptes.find((c) => c.id === (p.compteId || p.compte_id))?.emailCompte || "-"}</Td>
+                  <Td><PlatformBadge name={p.compte?.plateforme || comptes.find((c) => c.id === (p.compteId || p.compte_id))?.plateforme || ""} /></Td>
+                  <Td style={{ fontWeight: 600 }}>{p.nomProfil || p.nom_profil || "-"}</Td>
+                  <Td><code style={{ background: "#f5f5f5", padding: "3px 8px", borderRadius: "4px", fontSize: "0.8rem" }}>{p.pin || "-"}</code></Td>
+                  <Td>{p.nbAbonnes ?? p.nb_abonnes ?? 0} / 2</Td>
+                  <Td><ActionBtns onEdit={() => openEdit(p)} onDelete={() => handleDelete(p.id)} /></Td>
+                </tr>
+              ))}
+            </tbody></table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ==================== NOTIFICATIONS ADMIN ==================== */
+
+function NotificationsTab({ data, onRefresh }: { data: any[]; onRefresh: () => void }) {
+  const handleMarkAll = async () => {
+    try { await notificationsService.adminMarquerToutesLues(); onRefresh(); } catch { alert("Erreur"); }
+  };
+  const handleMarkOne = async (id: number) => {
+    try { await notificationsService.adminMarquerLue(id); onRefresh(); } catch { alert("Erreur"); }
+  };
+  if (data.length === 0) return <div style={tableCardStyle}><EmptyState text="Aucune notification" /></div>;
+  return (
+    <div>
+      <div style={{ marginBottom: "15px", display: "flex", justifyContent: "flex-end" }}>
+        <button onClick={handleMarkAll} style={{ ...btnStyle, background: "#111827", padding: "8px 16px", fontSize: "0.85rem" }}>
+          <i className="fi-rr-check"></i> Tout marquer comme lu
+        </button>
+      </div>
+      <div style={tableCardStyle}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={tableStyle}><thead><tr style={theadRowStyle}>
+            <Th>Date</Th><Th>Titre / Type</Th><Th>Message</Th><Th>Statut</Th><Th>Actions</Th>
+          </tr></thead><tbody>
+            {data.map((n: any) => (
+              <tr key={n.id} style={tbodyRowStyle}>
+                <Td style={{ color: "#999", fontSize: "0.8rem" }}>{n.createdAt ? new Date(n.createdAt).toLocaleString("fr-FR") : "-"}</Td>
+                <Td style={{ fontWeight: 600, maxWidth: "220px", whiteSpace: "normal" }}>
+                  {n.titre || n.title || n.type || "-"}
+                </Td>
+                <Td style={{ maxWidth: "420px", whiteSpace: "normal", fontSize: "0.85rem" }}>{n.message}</Td>
+                <Td><StatusBadge status={n.lue ? "lu" : "non lu"} /></Td>
+                <Td>
+                  {!n.lue && (
+                    <button onClick={() => handleMarkOne(n.id)} style={editBtnStyle} title="Marquer comme lu">
+                      <i className="fi-rr-check"></i>
+                    </button>
+                  )}
+                </Td>
+              </tr>
+            ))}
+          </tbody></table>
+        </div>
       </div>
     </div>
   );

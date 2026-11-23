@@ -16,6 +16,7 @@ export const abonnementsService = {
     plateforme: string
     nbEcran: number
     referencePaiement: string
+    composition?: string
   }) { return api.post('/abonnementscreate', data) },
   // Lister / voir
   getAll() { return api.get('/abonnements') },

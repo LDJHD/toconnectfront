@@ -17,7 +17,11 @@ export const adminService = {
   createCompte(data: any) { return api.post('/comptescreate', data) },
   updateCompte(id: number, data: any) { return api.put(`/comptes/update/${id}`, data) },
   deleteCompte(id: number) { return api.delete(`/comptes/delete/${id}`) },
-  getProfils() { return api.get('/profils') },
+  getProfils(compteId?: number) { return api.get('/profils', { params: compteId ? { compteId } : {} }) },
+  createProfil(data: any) { return api.post('/profilscreate', data) },
+  updateProfil(id: number, data: any) { return api.put(`/profils/update/${id}`, data) },
+  deleteProfil(id: number) { return api.delete(`/profils/delete/${id}`) },
+  terminerAbonnement(id: number) { return api.put(`/abonnements/terminer/${id}`) },
   getUtilisateurs() { return api.get('/utilisateurs') },
   // Type comptes (admin CRUD) - multipart pour image
   createTypeCompte(data: FormData) {

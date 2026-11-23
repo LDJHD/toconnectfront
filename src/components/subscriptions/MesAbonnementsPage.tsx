@@ -133,6 +133,7 @@ function MesAbonnementsPage() {
           prix,
           plateforme: plan.plateforme || "",
           nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
+          composition: plan.composition || "",
           ...infos,
         },
       };
@@ -161,7 +162,9 @@ function MesAbonnementsPage() {
   const isActive = (abo: any) => {
     if (abo.fin || abo.inactif) return false;
     const dateFin = new Date(abo.dateFin || abo.date_fin);
-    return dateFin > new Date();
+    if (Number.isNaN(dateFin.getTime())) return false;
+    dateFin.setHours(23, 59, 59, 999);
+    return dateFin >= new Date();
   };
 
   return (

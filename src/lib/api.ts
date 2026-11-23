@@ -8,10 +8,13 @@ const api = axios.create({
   timeout: 8000,
 })
 
-// Interceptor pour ajouter le token admin si présent
+// Interceptor : on choisit le token en fonction de la zone (admin vs client).
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('admin_token') || localStorage.getItem('auth_token')
+    const isAdminArea = window.location.pathname.startsWith('/admin')
+    const token = isAdminArea
+      ? (localStorage.getItem('admin_token') || localStorage.getItem('auth_token'))
+      : (localStorage.getItem('auth_token') || localStorage.getItem('admin_token'))
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }

@@ -86,9 +86,11 @@ function SouscrirePage() {
           prix: Number(plan.prix),
           plateforme: plan.plateforme || "",
           nbEcran: plan.nombreEcran || plan.nombre_ecran || 1,
+          nom: nom.trim(),
           nomComplet: nom.trim(),
           email: email.trim(),
           telephone: telephone.trim(),
+          composition: plan.composition || "",
         },
       };
       const res =
